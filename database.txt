@@ -1,0 +1,12 @@
+
+    pages
+        id
+        title
+        slug
+        content
+        featured_image
+
+    templates
+        id
+        content
+            

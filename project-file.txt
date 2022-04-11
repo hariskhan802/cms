@@ -1,0 +1,122 @@
+
+
+bugs
+    slug is not work properly
+    category hierarchy not work properly
+    when clicked edit button on post. and then click on add new button, submit button text does not change
+    
+
+To Do
+    settings
+        Make Settings Works
+        add allow image type dynamic
+        make dynamic drop down
+
+
+
+<div class="template-wrap">
+
+    <div class="title">
+        <h2><a href="@@link@@">@@title@@</a></h2>
+    </div>
+    <div class="description">
+        <p>@@description@@</p>
+    </div>
+    <div class="featured_image">
+        @@featured_image@@
+    </div>
+</div>
+
+
+create_users
+delete_users
+edit_users
+list_users
+
+
+create_posts
+delete_posts
+edit_posts
+list_posts
+manage_own_posts
+
+create_pages
+delete_pages
+edit_pages
+list_pages
+manage_own_pages
+
+view_dashboard
+
+delete_comments
+edit_comments
+list_comments
+manage_own_comments
+
+
+list_settings
+edit_settings
+
+Schema::create('terms', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->string('slug')->unique();
+            $table->string('featured_image');
+            $table->string('description');
+            $table->string('parent_id');
+            $table->timestamps();
+        });
+
+Schema::create('termmeta', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->string('slug')->unique();
+            $table->string('featured_image');
+            $table->string('description');
+            $table->string('parent_id');
+            $table->timestamps();
+        });
+        Schema::create('posts', function (Blueprint $table) {
+            $table->id();
+            $table->string('post_title');
+            $table->string('post_slug')->unique();
+            $table->unsignedBigInteger('template_id')->nullable();
+            $table->foreign('template_id')->references('id')->on('templates')->onDelete('set null');
+            $table->string('post_content');
+            $table->string('featured_image');
+            $table->string('post_status');
+            $table->string('post_type');
+            $table->string('menu_order');
+            $table->timestamps();
+        });
+        Schema::create('postmeta', function (Blueprint $table) {
+            $table->bigIncrements('meta_id');
+            $table->unsignedBigInteger('post_id')->nullable();
+            $table->foreign('post_id')->references('id')->on('posts')->onDelete('set null');
+            $table->string('meta_key');
+            $table->string('meta_value');
+            $table->timestamps();
+        });
+
+        Schema::create('term_taxonomy', function (Blueprint $table) {
+            $table->bigIncrements('term_taxonomy_id');
+            $table->unsignedBigInteger('term_id')->nullable();
+            $table->foreign('term_id')->references('id')->on('terms')->onDelete('set null');
+            $table->string('slug')->unique();
+            $table->string('featured_image');
+            $table->string('description');
+            $table->string('parent_id');
+            $table->timestamps();
+        });
+
+        Schema::create('term_relationships', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->string('slug')->unique();
+            $table->string('featured_image');
+            $table->string('description');
+            $table->string('parent_id');
+            $table->timestamps();
+        });
+
+
