@@ -12,7 +12,8 @@ To Do
         add allow image type dynamic
         make dynamic drop down
 
-
+Category - Format Multilevel Categories With Single Query
+https://www.youtube.com/watch?v=hFxR6D2kH44
 
 <div class="template-wrap">
 

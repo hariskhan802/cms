@@ -445,20 +445,23 @@
         return $attributes;
     }
 
+    function cms_error($error) {
+        return '<div class="cms-error"><h6>'.$error.'</h6></div>';
+    }
 
     function add_action($hook_name = '', $callback = '', $priority = 10) {
-        global $hooks;
-        
+        global $cmsHooks;
+        $registered_hooks = ['init', 'wp_head', 'wp_footer'];
         if (($hook_name == '' || $callback == '') || ($hook_name == '' && $callback == '') ) {
-            echo 'First and Second Arguments can not be empty!';
+            echo cms_error('First and Second Arguments can not be empty!');
             // return false;
         }
-        else if (!function_exists($callback)) {
-            echo 'Call back function is not exist!';
+        else if (is_string($callback) && !function_exists($callback)) {
+            echo cms_error('Call back function is not exist!');
             // return false;
         }
         else {
-            $hooks[$hook_name] = [
+            $cmsHooks[] = [
                 'hook_name' => $hook_name,
                 'callback' => $callback,
                 'priority' => $priority,
@@ -467,22 +470,43 @@
     }
 
     function do_action($hook_name ='') {
-        global $hooks;
-        var_dump($hooks); die;
-        if (!isset($hooks[$hook_name]) && count($hooks[$hook_name]) == 0) 
-            return 'This hook is not registered';
-        
-        $callback = $hooks[$hook_name]['callback'];
-        
-       
-        return $callback();
+        global $cmsHooks;
+        $actionRespoonse = '';
+        if ($cmsHooks && count($cmsHooks) > 0) {
+            $priority = array_column($cmsHooks, 'priority');
+            array_multisort($priority, SORT_ASC, $cmsHooks);
+            foreach ($cmsHooks as $key => $cmsHook) {
+                if (isset($cmsHook['hook_name']) && !empty($cmsHook['hook_name'])) {
+                    if ($cmsHook['hook_name'] == $hook_name) {
+                        $callback = $cmsHook['callback'];
+                        $actionRespoonse .= $callback();
+                    }
+                }
+            }
+            
+        }
+        return $actionRespoonse;
     }
 
-    add_action('wp_head', 'add_custom_scriptaa');
+    function register_post_type($args = []) {
+        global $cmsPostTypes;
+        $cmsPostTypes[] = $args;
 
-
-    function add_custom_script() {
-    ?>
-        <h2>tesinggg 1</h2>
-    <?php        
     }
+    function get_post_types() {
+        global $cmsPostTypes;
+        return $cmsPostTypes;
+    }
+    register_post_type([
+                'labels' => 'Movies',
+                'public' => true,
+                'menu_position' => 12,
+                'slug' => '',
+                'post_type' => 'post',
+            ]
+        );
+    // add_action ('init', function() {
+    //     die(); 'test'
+    // });
+
+    // do_action('init');

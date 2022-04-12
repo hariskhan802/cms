@@ -20,6 +20,7 @@ class CreatePostsTable extends Migration
             $table->longText('content');
             $table->string('featured_image');
             $table->string('post_status');
+            $table->string('post_type');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             $table->string('menu_order');
