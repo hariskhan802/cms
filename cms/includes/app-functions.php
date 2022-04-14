@@ -444,11 +444,29 @@
         
         return $attributes;
     }
+    function get_admin_post_type_url($routeParams, $post_type) {
+        $route = null;
+        if (array_value($routeParams, 'name') != null && array_value($routeParams, 'id') != null) {
+            $route = route(array_value($routeParams, 'name'), array_value($routeParams, 'id')).'?post_type='.$post_type;
+        }
+        elseif(array_value($routeParams, 'name') != null) {
+            $route = route(array_value($routeParams, 'name')).'?post_type='.$post_type;
+        }
+        return $route;
+    }
 
     function cms_error($error) {
         return '<div class="cms-error"><h6>'.$error.'</h6></div>';
     }
+    if (!function_exists('array_value')) {
 
+        function array_value($array, $key) {
+            if (is_array($array) && array_key_exists($key, $array)) {
+                return $array[$key];
+            }
+        }
+
+    }
     function add_action($hook_name = '', $callback = '', $priority = 10) {
         global $cmsHooks;
         $registered_hooks = ['init', 'wp_head', 'wp_footer'];
@@ -493,20 +511,27 @@
         $cmsPostTypes[] = $args;
 
     }
-    function get_post_types() {
+
+    function get_post_types_object() {
         global $cmsPostTypes;
+        $menuPosition = array_column($cmsPostTypes, 'menu_position');
+        array_multisort($menuPosition, SORT_ASC, $cmsPostTypes);
         return $cmsPostTypes;
     }
-    register_post_type([
-                'labels' => 'Movies',
-                'public' => true,
-                'menu_position' => 12,
-                'slug' => '',
-                'post_type' => 'post',
-            ]
-        );
-    // add_action ('init', function() {
-    //     die(); 'test'
-    // });
 
-    // do_action('init');
+    function get_post_types() {
+        return array_column(get_post_types_object(), 'post_type');
+    }
+    function get_current_post_type($postType = '') {
+        $currentPostTypeObject = [];
+        if ($postType != '') {
+            foreach (get_post_types_object() as $key => $postTypeObject) {
+                if ($postTypeObject['post_type'] == $postType) {
+                    $currentPostTypeObject = $postTypeObject;
+                }
+            }
+        }
+        return $currentPostTypeObject;
+    }
+    
+    

@@ -63,7 +63,6 @@
              .replace(/[^\w ]+/g, '')
              .replace(/ +/g, '-');
             var textArr = text.split('');
-            // console.log(textArr[textArr.length-1]);
             if (textArr[textArr.length-1] == '-') {
                 textArr.pop()
                 text = textArr.join('');
@@ -77,7 +76,6 @@
             $imageExtensions = $image_extensions.split(',');
             $explodeImage = $image.split('.');
             $extension = $explodeImage[($explodeImage.length-1)];
-            // console.log();
             return $imageExtensions.indexOf($extension) != -1;
         }
         function checkCheckboxes($this = '', isRoleSettingPage = true) {
@@ -90,7 +88,6 @@
                 if (!isRoleSettingPage) {
                     $(this).find('.checkbox-fg').each(function() {
                         if (!$(this).find('[type="checkbox"]').is(':checked')) {
-                            console.log('t1')
                             isFormCheckboxChecked2 = false;
                         }
                     });
@@ -152,7 +149,6 @@
                     $('[name="_status"]').val(post_status);
                     
                     $.each(item,function(k, v) {
-                        console.log(v);
                         if (__is_image(v)) {
                             
                             $('[name="'+k+'"]').removeAttr('required');
@@ -195,6 +191,16 @@
                 
             });
         }
+        function set_admin_panel_sub_menu_position() {
+            setTimeout(function() {
+                $extraSpace = 16;
+                if ($('#accordionSidebar').hasClass('toggled') || window.screen.width <= 676) {
+                    $extraSpace = 32;
+                }
+                $('.sidebar-dark .nav-item .cus-sub-menu.collapse:not(.show)').css({'left': $('.sidebar-dark .nav-item .nav-link').width()+$extraSpace})
+            }, 100);
+            // $('.sidebar-dark .nav-item .cus-sub-menu.collapse')
+        }
         checkCheckboxes('', true);
         /* $('.c-datatable').DataTable({
             processing: true,
@@ -236,7 +242,7 @@
             });
         }
 
-        $('#add-edit-modal form, .profile-wrap form, .roles-settings-wrap form').submit(function(e) {
+        $('#add-edit-modal form, .profile-wrap form, .roles-settings-wrap form, .post-type .post-type-form form').submit(function(e) {
             e.preventDefault();
             $('[name="submit"]').prop('disabled', true);
             $('.error-msg').empty();
@@ -251,7 +257,7 @@
                         else {
                             $('[name="'+k+'"]').next('.error-msg').html(v);
                         }
-                        
+                        // scrollTo(0, jQuery('[name="'+k+'"]').offset().top-40);
                     });
                     $('[name="submit"]').prop('disabled', false);
                 }
@@ -263,7 +269,11 @@
                             window.location.href = app_url+'/admin/'+$('.edit-page').attr('parent-page-name')
                         }
                         else {
-                            location.reload();
+                            if (postType != '') {
+                                window.location.href = app_url+'/admin/posts/?post_type='+postType;
+                            }else{
+                                location.reload();
+                            }
                         }
                     }, 2000);
                 }
@@ -280,8 +290,10 @@
             $('#add-edit-modal form .modal-title').text('Add New');
         });
         $('[name="submit"][value="Publish"]').click(function() {
-            if ($('#add-edit-modal form')[0].checkValidity()) {
-                $('[name="_status"]').val($(this).val())
+            if ($('#add-edit-modal form').length > 0) {
+                if ($('#add-edit-modal form')[0].checkValidity()) {
+                    $('[name="_status"]').val($(this).val())
+                }
             }
             
         });
@@ -293,7 +305,7 @@
 
         $('.nofound-td').attr('colspan', $('.c-table thead th').length);
         
-        $('.edit-record').click(function(e) {
+        $('body:not(.post-type) .edit-record').click(function(e) {
             e.preventDefault();
             history.pushState(null, 'CMS', $(this).attr('href'));
             $('body').addClass('edit-page');
@@ -409,6 +421,14 @@
         });
         
         
+        $(window).resize(function(e) {
+            set_admin_panel_sub_menu_position()
+        });
+        $('#sidebarToggle').click(function(e) {
+            set_admin_panel_sub_menu_position()
+        });
+        
+        set_admin_panel_sub_menu_position();
     });
 
     

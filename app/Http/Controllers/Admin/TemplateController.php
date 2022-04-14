@@ -29,8 +29,8 @@ class TemplateController extends Controller
         $data = $req->all();
         $response = ['status' => [], 'errors' => []];
         $validated = Validator::make($data, [
-            'title' => 'required',
-            'content' => 'required|unique:templates',
+            'title' => 'required|unique:templates',
+            'content' => 'required',
         ]);
         
         if ($validated->fails()) {

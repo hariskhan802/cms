@@ -3,9 +3,10 @@
 @extends('Admin.Layout.layout')
 
 @section('content')
-
-	<div class="main-wrap  {{ $name.'-wrap' }}">
+    
+	<div class="main-wrap  {{ $postType.'-wrap' }}">
         <form>
+            <input type="hidden" name="post_type" value="{{ $currentPostType['post_type'] }}">
             @if(session('msg'))
             <div class="card mb-4 border-left-success">
                 <div class="card-body">
@@ -22,7 +23,7 @@
             </div>
             @endif
             <div class="btn-wrap">
-                <a data-toggle="modal" data-target="#add-edit-modal" data-form="{{ route('add-'.__word_format($name)) }}" class="btn btn-primary btn-icon-split  f-action-switcher add-new-record ">
+                <a  href="{{ get_admin_post_type_url(['name' => 'add-post'], $currentPostType['post_type']) }}" class="btn btn-primary btn-icon-split  f-action-switcher add-new-record ">
                     <span class="icon text-white-50">
                         <i class="fas fa-plus"></i>
                     </span>
@@ -33,7 +34,7 @@
             <div class="card shadow mb-4">
 
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">{{ __word_format($name, 'cPlural')  }}</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">{{ $currentPostType['name']  }}</h6>
                 </div>
                 
                 <div class="row c-row">
@@ -42,10 +43,10 @@
 
                         <div class="records-status-wrap">
                             <ul>
-                                <li><a href="{{ route(__word_format($name, 'plural')) }}">All</a></li>
-                                <li><a href="{{ route(__word_format($name, 'plural')).'?status=published' }}">Published</a></li>
-                                <li><a href="{{ route(__word_format($name, 'plural')).'?status=drafts' }}">Drafts</a></li>
-                                <li><a href="{{ route(__word_format($name, 'plural')).'?status=trash' }}">Trash</a></li>
+                                <li><a href="{{ get_admin_post_type_url(['name' => 'posts'], $currentPostType['post_type']) }}">All</a></li>
+                                <li><a href="{{ get_admin_post_type_url(['name' => 'posts'], $currentPostType['post_type']).'&status=published' }}">Published</a></li>
+                                <li><a href="{{ get_admin_post_type_url(['name' => 'posts'], $currentPostType['post_type']).'&status=drafts' }}">Drafts</a></li>
+                                <li><a href="{{ get_admin_post_type_url(['name' => 'posts'], $currentPostType['post_type']).'&status=trash' }}">Trash</a></li>
                             </ul>
                         </div>
                     </div>
@@ -55,10 +56,10 @@
                             <select class="rec-action" name="rec_action">
                                 <option value="">-----------</option>
                                 @if(\Request::input('status') != 'trash')
-                                <option value="trash" data-form="{{ route('delete-'.__word_format($name)) }}">Trash</option>
+                                <option value="trash" data-form="{{ get_admin_post_type_url(['name' => 'delete-post'], $currentPostType['post_type']) }}">Trash</option>
                                 @elseif(\Request::input('status') == 'trash')
-                                <option value="delete" data-form="{{ route('delete-'.__word_format($name)) }}">Delete</option>
-                                <option value="restore" data-form="{{ route('restore-'.__word_format($name)) }}">Restore</option>
+                                <option value="delete" data-form="{{ get_admin_post_type_url(['name' => 'delete-post'], $currentPostType['post_type']) }}">Delete</option>
+                                <option value="restore" data-form="{{ get_admin_post_type_url(['name' => 'restore-post'], $currentPostType['post_type']) }}">Restore</option>
                                 @endif
                             </select>
                             
@@ -109,13 +110,13 @@
                                             <td>{{ $record->created_at->diffForHumans() }}</td>
                                             <td class="action">
                                                 @if(\Request::input('status') != 'trash')
-                                                <a href="{{ route('edit-'.__word_format($name), $record->id) }}" class="edit-record"><i class="fa fa-pencil-alt"></i></a>
+                                                <a href="{{ get_admin_post_type_url(['name' => 'edit-post', 'id' => $record->id], $currentPostType['post_type']) }}" class="edit-record"><i class="fa fa-pencil-alt"></i></a>
                                                 @else
-                                                <a href="{{ route('restore-'.__word_format($name), $record->id) }}">
+                                                <a href="{{ get_admin_post_type_url(['name' => 'restore-post', 'id' => $record->id], $currentPostType['post_type']) }}">
                                                     <i class="fa fa-undo"></i>
                                                 </a>
                                                 @endif
-                                                <a href="{{ route('delete-'.__word_format($name), $record->id) }}" class="{{ \Request::input('status') == 'trash' ? 'danger-delete' : '' }}">
+                                                <a href="{{ get_admin_post_type_url(['name' => 'delete-post', 'id' => $record->id], $currentPostType['post_type']) }}" class="{{ \Request::input('status') == 'trash' ? 'danger-delete' : '' }}">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
                                             </td>
@@ -130,8 +131,9 @@
                             </tbody>
                         </table>
                     </div>
+                    <?php //var_dump(\Request::query()); die; ?>
                     <div class="pagination">
-                    {{ $data->links() }}
+                    {{ $data->appends(\Request::query())->links() }}
                     </div>
                 </div>
             </div>
@@ -159,5 +161,4 @@
         </div>
     </div>
 
-    @include('Admin.'.__word_format($name, 'ucfirst').'.add-edit')
 @endsection

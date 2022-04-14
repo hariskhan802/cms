@@ -114,7 +114,7 @@
                         </table>
                     </div>
                     <div class="pagination">
-                    {{ $data->links() }}
+                    {{ $data->appends(\Request::query())->links() }}
                     </div>
                 </div>
             </div>

@@ -1,4 +1,5 @@
 <?php 
-        
-    require 'app-functions.php';
+
+	do_action('init');
+	
 ?>

@@ -6,6 +6,7 @@
 
 	<div class="main-wrap  {{ $name.'-wrap' }}">
         <form>
+            <input type="hidden" name="post_type" value="{{ }}">
             @if(session('msg'))
             <div class="card mb-4 border-left-success">
                 <div class="card-body">
@@ -88,7 +89,7 @@
                                     <th><input type="checkbox"  class="all-checked"></th>
                                     <th>ID</th>
                                     <th>Title</th>
-                                    W<th>Template</th>
+                                    <th>Template</th>
                                     <th>Featured Image</th>
                                     <th>Date</th>
                                     <th>Action</th>
@@ -128,7 +129,7 @@
                         </table>
                     </div>
                     <div class="pagination">
-                    {{ $data->links() }}
+                    {{ $data->appends(\Request::query())->links() }}
                     </div>
                 </div>
             </div>

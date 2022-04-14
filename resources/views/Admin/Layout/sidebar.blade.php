@@ -21,8 +21,28 @@
 
             <!-- Divider -->
             <hr class="sidebar-divider">
-            
-            <li class="nav-item {{ (Route::is('posts') || Route::is('categories')) ? 'active' : '' }}">
+            @if(count(get_post_types()) > 0)
+                @foreach(get_post_types_object() as $postType)
+                    <li class="nav-item {{ (Route::is('posts') && \Request::get('post_type') == $postType['post_type'] ) ? 'active' : '' }}">
+                        <a class="nav-link " href="{{ route('posts').'?post_type='.$postType['post_type'] }}" >
+                            <i class="fas fa-fw fa-folder"></i>
+                            <span>{{ $postType['name'] }}</span>
+                        </a>
+                        <div id="collapsePosts" class="cus-sub-menu collapse {{ (Route::is('posts') && \Request::get('post_type') == $postType['post_type'] ) ? 'show' : '' }}" aria-labelledby="headingPages"
+                            data-parent="#accordionSidebar">
+                            <ul>
+                                <li>
+                                    <a href="{{ get_admin_post_type_url(['name' => 'posts'], $postType['post_type']) }}">View</a>
+                                </li>
+                                <li>
+                                    <a href="{{ get_admin_post_type_url(['name' => 'add-post'], $postType['post_type']) }}">Add New</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                @endforeach
+            @endif
+            <!-- <li class="nav-item {{ (Route::is('posts') || Route::is('categories')) ? 'active' : '' }}">
                 <a class="nav-link " href="{{ route('posts') }}" >
                     <i class="fas fa-fw fa-folder"></i>
                     <span>Posts</span>
@@ -34,9 +54,7 @@
                         
                     </div>
                 </div>
-            </li>
-
-
+            </li> -->
             <li class="nav-item {{ Route::is('pages') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('pages') }}">
                     <i class="fas fa-fw fa-copy"></i>

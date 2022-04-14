@@ -28,7 +28,7 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "cms/includes/init.php"
+            "cms/includes/main.php"
         ]
     },
     "autoload-dev": {

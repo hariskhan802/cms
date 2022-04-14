@@ -1,3 +1,6 @@
+body  #wrapper a {
+    text-decoration: none;
+}
 #add-edit-modal .modal-dialog {
     max-width: 80%;
 }
@@ -180,4 +183,89 @@ ul.perm-list.p-l-hide li:nth-child(-n+3) {
 ul.perm-list {
     list-style: none;
     padding: 0;
+}
+
+.post-type-form .card.mb-4.c-msg.border-left-success {
+    margin-top: 10px;
+}
+
+
+
+
+.sidebar-dark .nav-item:hover .cus-sub-menu.collapse:not(.show) {
+    display: block;
+    position: absolute;
+    background: #4369d7;
+    left: 208px;
+    width: 170px;
+}
+
+.sidebar-dark .nav-item:hover .cus-sub-menu.collapse:not(.show) ul li a {
+    color: #fff;
+    width: 100%;
+    display: block;
+}
+
+
+.sidebar-dark .nav-item:hover .cus-sub-menu.collapse:not(.show) ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar-dark .nav-item:hover .cus-sub-menu.collapse:not(.show) ul li {
+    padding: 5px 0px 5px 25px;
+    border-bottom: 1px solid #ffffff;
+}
+
+.cus-sub-menu.collapse.show {
+    background: white;
+    border-radius: 6px;
+}
+
+.cus-sub-menu.collapse.show ul {
+    list-style: none;
+    padding: 0;
+}
+
+.cus-sub-menu.collapse.show ul li {
+    padding: 5px 0px 5px 25px;
+    border-bottom: 1px solid #4c71dd;
+}
+.cus-sub-menu.collapse.show ul li a {
+    color: #4b70dd;
+    font-size: .85rem;
+    width: 100%;
+    display: block;
+}
+
+
+
+
+@media screen and (max-width: 676px) {
+
+    .sidebar-dark .nav-item .cus-sub-menu.collapse {
+        display: block;
+        position: absolute;
+        background: #4369d7;
+        left: 105px;
+        width: 130px;
+    }
+
+
+
+    .sidebar-dark .nav-item .cus-sub-menu.collapse ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sidebar-dark .nav-item .cus-sub-menu.collapse ul li {
+        padding: 5px 0px 5px 25px;
+        border-bottom: 1px solid #ffffff;
+    }
+    .sidebar-dark .nav-item .cus-sub-menu.collapse ul li a {
+        color: #fff;
+        width: 100%;
+        display: block;
+    }
+
 }

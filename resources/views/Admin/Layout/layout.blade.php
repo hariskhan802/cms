@@ -3,23 +3,32 @@
 
 <head>
 @include('Admin.Layout.top-scripts')
+@php
+    $postType = (isset($postType) && !empty($postType)) ? $postType : '';
+@endphp
 <script type="text/javascript">
     localStorage.setItem('app_url', '{{ url('') }}');
     localStorage.setItem('image_extensions', '{{ __get_image_extensions("string") }}');
-
+    var postType = '{{ $postType }}';
 </script>
 {!! do_action('wp_head') !!}
 </head>
 @php
+
     $id = \Request::route('id') ? \Request::route('id') : '0';
+    
+    if($postType != '') {
+        $name = $postType;
+        $postType = 'post-type';
+    }
     $atts = [
         'page-name' => $name,
         'edit-page-id' => $id,
         'parent-page-name' => __word_format($name, 'plural')
     ];
-    
+
 @endphp
-<body id="page-top" class="{{ __get_admin_body_classes(str_replace(' ','-', $name).'-m-wrap ') }}" {{ __get_admin_body_attributes($atts) }}>
+<body id="page-top" class="{{ __get_admin_body_classes(str_replace(' ','-', $name).'-m-wrap '.$postType) }}" {{ __get_admin_body_attributes($atts) }}>
 
     <!-- Page Wrapper -->
     <div id="wrapper">

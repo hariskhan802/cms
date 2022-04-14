@@ -14,8 +14,13 @@ class PostController extends Controller
     private function add_edit_and_listing($req) {
         $post1 = Post::query();
         $post2 = Post::query();
+        $currentPostType = get_current_post_type($req->input('post_type'));
+        if (!$currentPostType || !isset($currentPostType['post_type']) || empty($currentPostType['post_type']))
+            return redirect(route('dashboard'));
+        
         $name = 'post';
-        $totalRecords = $post1->where('post_status', '!=', 'trashed')->count();
+        $totalRecords = $post1->where('post_status', '!=', 'trashed')->where(['post_type' => $currentPostType['post_type']])->count();
+        $post2->where(['post_type' => $currentPostType['post_type']]);
         if ($req->input('search')) {
             $post2->where('posts.title', 'like', "%{$req->input('search')}%");
         }
@@ -34,50 +39,56 @@ class PostController extends Controller
         else if ($req->input('status') == 'trash') {
             $post2->where(['post_status' => 'trashed']);
         }
-        return view('Admin.Post.index', ['name' => $name, 'totalRecords' => $totalRecords, 'data' => $post2->select(['posts.id', 'posts.title', 'posts.slug', 'posts.featured_image', 'posts.created_at'])->orderBy('posts.id', 'DESC')->paginate(10)]);
+        return view('Admin.Post.index', ['postType' => $currentPostType['post_type'], 'currentPostType' => $currentPostType, 'totalRecords' => $totalRecords, 'data' => $post2->select(['posts.id', 'posts.title', 'posts.slug', 'posts.featured_image', 'posts.created_at'])->orderBy('posts.id', 'DESC')->paginate(10)]);
     }
     public function index(Request $req) {
         return $this->add_edit_and_listing($req);
     }
     public function add(Request $req) {
-        $data = $req->all();
-        $response = ['status' => [], 'errors' => []];
-        $validated = Validator::make($data, [
-            'title' => 'required',
-            'slug' => 'required|unique:posts',
-            'content' => 'required',
-            'featured_image' => 'required||file|max:1000|mimes:'.__get_image_extensions('string'),
-        ]);
-        $data['user_id'] = __c_user()->id;
+        if ($req->isMethod('post')) {
+            $data = $req->all();
+            $response = ['status' => [], 'errors' => []];
+            $validated = Validator::make($data, [
+                'title' => 'required',
+                'slug' => 'required|unique:posts',
+                'content' => 'required',
+                'featured_image' => 'required||file|max:1000|mimes:'.__get_image_extensions('string'),
+            ]);
+            $data['user_id'] = __c_user()->id;
 
-        $data['post_status'] = 'drafted';
-        if ($data['_status'] == 'Publish') {
-            $data['post_status'] = 'published';
-        }
-        if ($validated->fails()) {
-            $response['errors'] = $validated->getMessageBag()->toArray();
-            $response['status'] = 'fail';
+            $data['post_status'] = 'drafted';
+            if ($data['_status'] == 'Publish') {
+                $data['post_status'] = 'published';
+            }
+            if ($validated->fails()) {
+                $response['errors'] = $validated->getMessageBag()->toArray();
+                $response['status'] = 'fail';
+                return $response;
+            }
+            $data['menu_order'] = 0;
+            $image = $req->file('featured_image');
+            $input['imagename'] = 'img-'.uniqid().time().'.'.$image->extension();
+            $path = public_path('/assets/images');
+            if(!File::exists($path)){
+                File::makeDirectory($path, $mode = 0777, true, true);
+            }
+            $img = Image::make($image->path());
+            $img->save($path.'/'.$input['imagename'], 50);
+            $data['featured_image'] = $input['imagename'];
+            if($pID = Post::create($data)->id) {
+                foreach ($data['cats'] as $key => $cat) {
+                    \App\Models\PostCategoryRelation::create(['post_id' => $pID, 'cat_id' => $cat]);
+                }
+                
+                $response['status'] = 'success';
+                $response['message'] = 'You have added successfully';
+            }
             return $response;
         }
-        $data['menu_order'] = 0;
-        $image = $req->file('featured_image');
-        $input['imagename'] = 'img-'.uniqid().time().'.'.$image->extension();
-        $path = public_path('/assets/images');
-        if(!File::exists($path)){
-            File::makeDirectory($path, $mode = 0777, true, true);
+        else {
+            $currentPostType = get_current_post_type($req->input('post_type'));
+            return view('Admin.Post.add-edit', ['postType' => $currentPostType['post_type'], 'currentPostType' => $currentPostType]);
         }
-        $img = Image::make($image->path());
-        $img->save($path.'/'.$input['imagename'], 50);
-        $data['featured_image'] = $input['imagename'];
-        if($pID = Post::create($data)->id) {
-            foreach ($data['cats'] as $key => $cat) {
-                \App\Models\PostCategoryRelation::create(['post_id' => $pID, 'cat_id' => $cat]);
-            }
-            
-            $response['status'] = 'success';
-            $response['message'] = 'You have added successfully';
-        }
-        return $response;
     }
     public function edit($id, Request $req) {
         if (__c_user()->is_super_admin != 1) {

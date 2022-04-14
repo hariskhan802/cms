@@ -114,18 +114,69 @@ class DatabaseSeeder extends Seeder
         DB::table('categories')->insert($cats);
 
         DB::table('posts')->insert([
+            [
                 'title' => 'Post 1',
                 'slug' => 'post-1',
                 'content' => 'test',
                 'featured_image' => '',
                 'post_status' => 'published',
+                'post_type' => 'post',
                 'user_id' => 1,
                 'menu_order' => '0',
                 'created_at' => now(),
                 'updated_at' => now(),
                 
-            ]);
-
+            ],
+            [
+                'title' => 'Post 2',
+                'slug' => 'post-2',
+                'content' => 'test',
+                'featured_image' => '',
+                'post_status' => 'published',
+                'post_type' => 'post',
+                'user_id' => 1,
+                'menu_order' => '0',
+                'created_at' => now(),
+                'updated_at' => now(),
+                
+            ],
+            [
+                'title' => 'Page 1',
+                'slug' => 'page-1',
+                'content' => 'test',
+                'featured_image' => '',
+                'post_status' => 'published',
+                'post_type' => 'page',
+                'user_id' => 1,
+                'menu_order' => '0',
+                'created_at' => now(),
+                'updated_at' => now(),
+                
+            ],
+            [
+                'title' => 'Page 2',
+                'slug' => 'page-2',
+                'content' => 'test',
+                'featured_image' => '',
+                'post_status' => 'published',
+                'post_type' => 'page',
+                'user_id' => 1,
+                'menu_order' => '0',
+                'created_at' => now(),
+                'updated_at' => now(),
+                
+            ],
+        ]);
+        DB::table('postmetas')->insert([
+            [
+                'post_id' => 2,
+                'meta_key' => '__template_id',
+                'meta_value' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+                
+            ],
+        ]);
         $roles = [
             [
                 'role' => 'Administrator',
@@ -152,7 +203,16 @@ class DatabaseSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
                 
-            ]
+            ],
+            [
+                'comment' => 'Comment 2',
+                'user_id' => 1,
+                'post_id' => 1,
+                'status' => 'pending',
+                'created_at' => now(),
+                'updated_at' => now(),
+                
+            ],
         ]);
     }
 }

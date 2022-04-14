@@ -45,9 +45,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['AdminCheck']], function() {
     Route::match(['get', 'post'], 'profile', [AuthController::class, 'profile'])->name('profile');
 
 
-    // Post Routes
+    // Post Type Routes
     Route::get('posts', [PostController::class, 'index'])->name('posts');
-    Route::post('post/add', [PostController::class, 'add'])->name('add-post');
+    Route::match(['get', 'post'], 'post/add', [PostController::class, 'add'])->name('add-post');
+    
     Route::match(['get', 'post'], 'post/edit/{id}', [PostController::class, 'edit'])->name('edit-post');
     Route::match(['get', 'post'], 'post/delete/{id?}', [PostController::class, 'delete'])->name('delete-post');
     Route::get('post
