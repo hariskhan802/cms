@@ -54,12 +54,12 @@
                         
                     </div>
                 </div>
-            </li> -->
+            </li> 
             <li class="nav-item {{ Route::is('pages') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('pages') }}">
                     <i class="fas fa-fw fa-copy"></i>
                     <span>Pages</span></a>
-            </li>
+            </li> -->
 
             <li class="nav-item {{ Route::is('templates') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('templates') }}">

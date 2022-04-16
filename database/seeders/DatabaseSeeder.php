@@ -214,5 +214,129 @@ class DatabaseSeeder extends Seeder
                 
             ],
         ]);
+
+        DB::table('options')->insert([
+            [
+                'option_name' => 'site_title',
+                'option_value' => 'My Site',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'option_name' => 'tagline',
+                'option_value' => 'test',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'option_name' => 'site_address_url',
+                'option_value' => 'http://localhost/cms',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'option_name' => 'administration_email_address',
+                'option_value' => 'alex@abc.com',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'option_name' => 'membership',
+                'option_value' => 'on',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'option_name' => 'new_user_default_role',
+                'option_value' => '2',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+
+            [
+                'option_name' => 'is_admin_panel_date_custom',
+                'option_value' => 'false',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'option_name' => 'admin_panel_date_format',
+                'option_value' => 'F j, Y',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'option_name' => 'admin_panel_custom_date_format',
+                'option_value' => 'Y-m-d',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            
+
+
+            [
+                'option_name' => 'is_admin_panel_time_custom',
+                'option_value' => 'false',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'option_name' => 'admin_panel_time_format',
+                'option_value' => 'g:i a',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'option_name' => 'admin_panel_custom_time_format',
+                'option_value' => 'g:i a',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+
+
+
+            [
+                'option_name' => 'is_website_date_custom',
+                'option_value' => 'false',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'option_name' => 'website_date_format',
+                'option_value' => 'F j, Y',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'option_name' => 'website_custom_date_format',
+                'option_value' => 'Y-m-d',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+
+
+
+            [
+                'option_name' => 'is_website_time_custom',
+                'option_value' => 'false',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'option_name' => 'website_time_format',
+                'option_value' => 'g:i a',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'option_name' => 'website_custom_time_format',
+                'option_value' => 'g:i a',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
     }
 }

@@ -18,7 +18,7 @@ class RoleController extends Controller
             $role2->where('roles.role', 'like', "%{$req->input('search')}%");
         }
         
-        return view('Admin.Role.index', ['name' => $name, 'totalRecords' => $totalRecords, 'data' => $role2->select(['roles.id', 'roles.role', 'roles.permissions', 'roles.created_at'])->orderBy('roles.id', 'ASC')->paginate(10)]);
+        return view('Admin.Role.index', ['name' => $name, 'totalRecords' => $totalRecords, 'data' => $role2->select(['roles.id', 'roles.role', 'roles.permissions', 'roles.created_at', 'roles.updated_at'])->orderBy('roles.id', 'ASC')->paginate(10)]);
     }
     public function index(Request $req) {
         return $this->add_edit_and_listing($req);

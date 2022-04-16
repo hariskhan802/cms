@@ -105,9 +105,9 @@
                                             <td>{{ $record->id }}</td>
                                             <td>{{ $record->title }}</td>
                                             <td>{{ $record->slug }}</td>
-                                            <td>{{ implode(', ', __get_category_string_format($record->id)) }}</td>
+                                            <td><p>{!! implode("<br> ", __get_category_string_format($record->id)) !!}</p></td>
                                             <td><img src="{{ __get_image($record->featured_image) }}" width="50"></td>
-                                            <td>{{ $record->created_at->diffForHumans() }}</td>
+                                            <td>{!! get_admin_panel_dates($record) !!}</td>
                                             <td class="action">
                                                 @if(\Request::input('status') != 'trash')
                                                 <a href="{{ get_admin_post_type_url(['name' => 'edit-post', 'id' => $record->id], $currentPostType['post_type']) }}" class="edit-record"><i class="fa fa-pencil-alt"></i></a>
@@ -131,7 +131,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <?php //var_dump(\Request::query()); die; ?>
+                    
                     <div class="pagination">
                     {{ $data->appends(\Request::query())->links() }}
                     </div>

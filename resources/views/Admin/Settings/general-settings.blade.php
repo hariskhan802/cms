@@ -55,7 +55,7 @@
                                 </div>
                                 <div class="form-group checkbox-fg">
                                     <label class="m-label">Membership</label>
-                                    <input type="checkbox" class="form-control"  name="membership"  id="membership" >
+                                    <input type="checkbox" class="form-control"  name="membership"  id="membership" {{ __get_option('membership') == 'on' ? 'checked' : '' }} >
                                     <label for="membership" class="c-label">Anyone can register</label>
                                     <small class="error-msg"></small>
                                 </div>
@@ -65,17 +65,130 @@
                                         <option value="">Select Role</option>
                                         @if($roles->count() > 0)
                                         @foreach($roles as $role)
-                                            <option value="{{ $role->id }}">{{ $role->role }}</option>
+                                            <option value="{{ $role->id }}" {{ __get_option('new_user_default_role') == $role->id ? 'selected' : '' }}>{{ $role->role }}</option>
                                         @endforeach
                                         @endif
                                     </select>
                                     <small class="error-msg"></small>
                                 </div>
-
                                 <div class="form-group">
-                                    <input type="hidden" name="_token" value="{{ @csrf_token() }}">
+                                    <label>Admin Panel Date Format</label>
+                                    <div class="radio-m-wrap">
+                                        <input type="hidden" name="is_admin_panel_date_custom" class="cus-d-t-hidden" value="false" >
+                                        <div class="radio-wrap">
+                                            @foreach(get_date_formats() as $key => $format)
+                                            
+                                            <div class="radio-btn-wrap form-check">
+                                                <input type="radio" class="form-check-input" id="{{ 'a-d-f-'.$key}}" name="admin_panel_date_format" value="{{ $format }}"  {{ (__get_option('is_admin_panel_date_custom') == 'false' && __get_option('admin_panel_date_format') == $format) ? 'checked' : '' }} >
+                                                <label class="form-check-label" for="{{ 'a-d-f-'.$key}}"> 
+                                                    <span class="d-f-p">{{ date($format) }}</span>
+                                                    <code class="t-d-f">{{ $format }}</code>
+                                                </label>
+                                            </div>
+                                            @endforeach
+                                            
+                                            <div class="radio-btn-wrap form-check ">
+                                                <input type="radio" class="form-check-input cus-date-radio-btn " id="a-d-f-c"  name="admin_panel_date_format"  value="{{ __get_option('admin_panel_custom_date_format')  }}"  {{ (__get_option('is_admin_panel_date_custom')) == 'true' ? 'checked' : '' }}  c-g="is_admin_panel_date_custom"  >
+                                                <label class="form-check-label" for="a-d-f-c"> 
+                                                    <span class="d-f-p">Custom: </span>
+                                                    <span>
+                                                        <input type="text" class="cus-date-format" name="admin_panel_custom_date_format" value="{{ __get_option('admin_panel_custom_date_format')  }}">
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    <small class="error-msg"></small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Admin Panel Time Format</label>
+                                    <div class="radio-m-wrap">
+                                        <input type="hidden" name="is_admin_panel_time_custom"  class="cus-d-t-hidden"  value="false"  >
+                                        <div class="radio-wrap">
+                                            @foreach(get_time_formats() as $key => $format)
+                                            
+                                            <div class="radio-btn-wrap form-check">
+                                                <input type="radio" class="form-check-input" id="{{ 'a-t-f-'.$key}}" name="admin_panel_time_format" value="{{ $format }}"  {{ (__get_option('is_admin_panel_time_custom') == 'false' && __get_option('admin_panel_time_format')  == $format) ? 'checked' : '' }}  >
+                                                <label class="form-check-label" for="{{ 'a-t-f-'.$key}}"> 
+                                                    <span class="d-f-p">{{ date($format) }}</span>
+                                                    <code class="t-d-f">{{ $format }}</code>
+                                                </label>
+                                            </div>
+                                            @endforeach
+                                            <div class="radio-btn-wrap form-check ">
+                                                <input type="radio" class="form-check-input cus-date-radio-btn " id="a-t-f-c" name="admin_panel_time_format" value="{{ __get_option('admin_panel_custom_time_format') }}" {{ (__get_option('is_admin_panel_time_custom') == 'true' ) ? 'checked' : '' }}  c-g="is_admin_panel_time_custom"  >
+                                                <label class="form-check-label" for="a-t-f-c"> 
+                                                    <span class="d-f-p">Custom: </span>
+                                                    <span>
+                                                        <input type="text" class="cus-date-format" name="admin_panel_custom_time_format" value="{{ __get_option('admin_panel_custom_time_format') }}" >
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    <small class="error-msg"></small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Website Date Format</label>
+                                    <div class="radio-m-wrap">
+                                        <input type="hidden" name="is_website_date_custom"  class="cus-d-t-hidden"  value="false"  >
+                                        <div class="radio-wrap">
+                                            @foreach(get_date_formats() as $key => $format)
+                                            <div class="radio-btn-wrap form-check">
+                                                <input type="radio" class="form-check-input" id="{{ 'w-d-f-'.$key}}" name="website_date_format" value="{{ $format }}"  {{ (__get_option('is_website_date_custom') == 'false' && __get_option('website_date_format') == $format) ? 'checked' : '' }}  >
+                                                <label class="form-check-label" for="{{ 'w-d-f-'.$key}}"> 
+                                                    <span class="d-f-p">{{ date($format) }}</span>
+                                                    <code class="t-d-f">{{ $format }}</code>
+                                                </label>
+                                            </div>
+                                            @endforeach
+                                            <div class="radio-btn-wrap form-check ">
+                                                <input type="radio" class="form-check-input cus-date-radio-btn " id="w-d-f-c" name="website_date_format" value="{{ __get_option('website_custom_date_format') }}"  {{ (__get_option('is_website_date_custom') == 'true' ) ? 'checked' : '' }}  c-g="is_website_date_custom" >
+                                                <label class="form-check-label" for="w-d-f-c"> 
+                                                    <span class="d-f-p">Custom: </span>
+                                                    <span>
+                                                        <input type="text" name="website_custom_date_format" class="cus-date-format" value="{{ __get_option('website_custom_date_format') }}">
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    <small class="error-msg"></small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Website Time Format</label>
+                                    <div class="radio-m-wrap">
+                                        <input type="hidden" name="is_website_time_custom"  class="cus-d-t-hidden"  value="false"  >
+                                        <div class="radio-wrap">
+                                            @foreach(get_time_formats() as $key => $format)
+                                            <div class="radio-btn-wrap form-check">
+                                                <input type="radio" class="form-check-input" id="{{ 'w-t-f-'.$key}}" name="website_time_format" value="{{ $format }}"  {{ (__get_option('is_website_time_custom') == 'false' && __get_option('website_time_format') == $format) ? 'checked' : '' }}  >
+                                                <label class="form-check-label" for="{{ 'w-t-f-'.$key}}"> 
+                                                    <span class="d-f-p">{{ date($format) }}</span>
+                                                    <code class="t-d-f">{{ $format }}</code>
+                                                </label>
+                                            </div>
+                                            @endforeach
+                                            <div class="radio-btn-wrap form-check ">
+                                                <input type="radio" class="form-check-input  cus-date-radio-btn  " id="w-t-f-c" name="website_time_format" value="{{ __get_option('website_custom_time_format') }}"  {{ (__get_option('is_website_time_custom') == 'true') ? 'checked' : '' }}  c-g="is_website_time_custom"  >
+                                                <label class="form-check-label" for="w-t-f-c"> 
+                                                    <span class="d-f-p">Custom: </span>
+                                                    <span>
+                                                        <input type="text" name="website_custom_time_format" class="cus-date-format" value="{{ __get_option('website_custom_time_format') }}">
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    <small class="error-msg"></small>
+                                </div>
+                                <div class="form-group">
+                                    @csrf
                                     <input type="submit" name="submit" value="Update" class="btn btn-primary pull-right">
-                                    
                                 </div>
                             </div>
                         </form>                        

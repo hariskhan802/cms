@@ -40,7 +40,7 @@ class CommentController extends Controller
         }
         
         
-        return view('Admin.Comment.index', ['name' => $name, 'totalRecords' => $totalRecords, 'data' => $comment2->select(['comments.id', 'comments.comment', 'comments.user_id', 'comments.post_id', 'comments.status', 'comments.created_at', 'users.name', 'posts.title'])->leftJoin('users', 'users.id', '=', 'comments.user_id')->leftJoin('posts', 'posts.id', '=', 'comments.post_id')->orderBy('comments.id', 'DESC')->paginate(10)]);
+        return view('Admin.Comment.index', ['name' => $name, 'totalRecords' => $totalRecords, 'data' => $comment2->select(['comments.id', 'comments.comment', 'comments.user_id', 'comments.post_id', 'comments.status', 'comments.created_at', 'users.name', 'posts.title', 'comments.updated_at'])->leftJoin('users', 'users.id', '=', 'comments.user_id')->leftJoin('posts', 'posts.id', '=', 'comments.post_id')->orderBy('comments.id', 'DESC')->paginate(10)]);
     }
     public function index(Request $req) {
         return $this->add_edit_and_listing($req);        

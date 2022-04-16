@@ -110,7 +110,7 @@
                                                 </a>
                                             </td>
                                             <td>{{ ucfirst($record->status) }}</td>
-                                            <td>{{ $record->created_at }}</td>
+                                            <td>{!! get_admin_panel_dates($record) !!}</td>
                                             <td class="action">
                                                 @if(\Request::input('status') != 'trash')
                                                 <a href="{{ route('edit-'.__word_format($name), $record->id) }}" class="edit-record"><i class="fa fa-pencil-alt"></i></a>

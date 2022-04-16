@@ -92,7 +92,7 @@
                                             <td>{{ $record->title }}</td>
                                             <td>{{ $record->description }}</td>
                                             <td><img src="{{ __get_image($record->featured_image) }}" width="50"></td>
-                                            <td>{{ $record->created_at->diffForHumans() }}</td>
+                                            <td>{!! get_admin_panel_dates($record) !!}</td>
                                             <td class="action">
                                                 
                                                 <a href="{{ route('edit-'.__word_format($name), $record->id) }}" class="edit-record"><i class="fa fa-pencil-alt"></i></a>

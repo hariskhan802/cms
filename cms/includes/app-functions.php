@@ -4,12 +4,10 @@
     use App\Models\PostCategoryRelation;
     use App\Models\Role;
     function __data_table($data) {
-        // $inputs, $table, $columns, $tColumns
         $columnsF = [];
         foreach ($data['columns'] as $key => $column) {
             $columnsF[] = ['data' => stripos($column, 'as') != false ? str_replace(' ', '', substr($column, stripos($column, 'as')+2)) : $column];
         }
-        // print_r($columnsF); die;
         $response['frontend'] = "<div class='card shadow mb-4'>
         <div class='card-header py-3'>
             <h6 class='m-0 font-weight-bold text-primary'>".@$data['title']."</h6>
@@ -48,9 +46,6 @@
             ->take($inputs['length'])
             ->get()
             ->toArray();
-            
-        
-                
             
             // $columnsF;
             $response['backend'] = array(
@@ -534,4 +529,58 @@
         return $currentPostTypeObject;
     }
     
+    function get_admin_panel_dates($record) {
+        
+        $response = '<div class="a-p-date-wrap">';
+        if ($record) {
+            if ($record->created_at != '') {
+                $response .= '<div class="a-p-created-at">Created At : '.get_admin_panel_datetime($record->created_at).'</div>';
+            }
+            if ($record->updated_at != '' && $record->updated_at != $record->created_at) {
+                $response .= '<div class="a-p-updated-at">Updated At : '.get_admin_panel_datetime($record->updated_at).'</div>';
+            }
+
+            // if ($record->created_at == $record->updated_at ) {
+            //     $response .= '<div class="a-p-updated-at">'.\Carbon\Carbon::parse($record->created_at)->diffForHumans(\Carbon\Carbon::now()).'</div>';
+            // }
+            // else {
+            //     $response .= '<div class="a-p-updated-at">'.\Carbon\Carbon::parse($record->updated_at)->diffForHumans(\Carbon\Carbon::now()).'</div>';
+            // }
+        }
+        $response .= '</div>';
+        return $response;
+    }
+
+    function get_admin_panel_datetime($date) {
+        $dateC = \Carbon\Carbon::parse($date)->format(__get_option('admin_panel_date_format'));
+        $timeC = \Carbon\Carbon::parse($date)->format(__get_option('admin_panel_time_format'));
+        return $dateC.' at '.$timeC;
+    }
+
+    function get_admin_panel_date() {
+        return __get_option('admin_panel_date_format');
+    }
     
+    function get_admin_panel_time() {
+        return __get_option('admin_panel_time_format');
+    }
+
+
+    function get_date_formats() {
+        $formats = [
+            'F j, Y',
+            'Y-m-d',
+            'm/d/Y',
+            'd/m/Y',
+        ];
+        return $formats;
+    }
+
+    function get_time_formats() {
+        $formats = [
+            'g:i a',
+            'g:i A',
+            'H:i',
+        ];
+        return $formats;
+    }

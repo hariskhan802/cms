@@ -32,7 +32,7 @@ class CategoryController extends Controller
         }
         $category3->where(['parent_id' => '0']);
         // $category2 = ;
-        return view('Admin.Category.index', ['name' => $name, 'totalRecords' => $totalRecords, 'data' => $category2->select(['categories.id', 'categories.title', 'categories.description', 'categories.featured_image', 'categories.created_at'])->orderBy('categories.id', 'DESC')->paginate(10), 'categories' => $category3->orderBy('categories.id', 'DESC')->get()]);
+        return view('Admin.Category.index', ['name' => $name, 'totalRecords' => $totalRecords, 'data' => $category2->select(['categories.id', 'categories.title', 'categories.description', 'categories.featured_image', 'categories.created_at', 'categories.updated_at'])->orderBy('categories.id', 'DESC')->paginate(10), 'categories' => $category3->orderBy('categories.id', 'DESC')->get()]);
     }
 
     public function index(Request $req) {

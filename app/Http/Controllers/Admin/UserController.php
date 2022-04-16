@@ -22,7 +22,7 @@ class UserController extends Controller
             $user2->where('users.name', 'like', "%{$req->input('search')}%")->orWhere('users.email', 'like', "%{$req->input('search')}%");
         }
         
-        return view('Admin.User.index', ['name' => $name, 'roles' => Role::select(['id', 'role'])->get(), 'totalRecords' => $totalRecords, 'data' => $user2->select(['users.id', 'users.name', 'users.email', 'users.image', 'users.role_id', 'users.is_super_admin', 'users.created_at'])->orderBy('users.id', 'DESC')->paginate(10)]);
+        return view('Admin.User.index', ['name' => $name, 'roles' => Role::select(['id', 'role'])->get(), 'totalRecords' => $totalRecords, 'data' => $user2->select(['users.id', 'users.name', 'users.email', 'users.image', 'users.role_id', 'users.is_super_admin', 'users.created_at', 'users.updated_at'])->orderBy('users.id', 'DESC')->paginate(10)]);
     }
     public function index(Request $req) {
         return $this->add_edit_and_listing($req);        

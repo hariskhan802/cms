@@ -11,12 +11,42 @@ use Image;
 
 class PostController extends Controller
 {
-    private function add_edit_and_listing($req) {
-        $post1 = Post::query();
-        $post2 = Post::query();
+    public function __construct(Request $req) {
+        $this->middleware(function ($request, $next) use ($req) {
+            if (__c_user()->is_super_admin != 1) {
+                var_dump($req->route()->parameter('id')); die;
+                if ($id) {
+                    if (Post::where(['id' => $id, 'user_id' => __c_user()->id])->count() == 0) {
+                        return back()->with('errormsg', 'Permission Denied');
+                    }
+                }
+                else {
+                    if (Post::whereIn('id', $req->input('action_ids'))->where(['user_id' => __c_user()->id])->count() == 0) {
+                        return back()->with('errormsg', 'Permission Denied');
+                    }
+                }
+            }
+            
+            $currentPostType = get_current_post_type($req->input('post_type'));
+            if (!$currentPostType || !isset($currentPostType['post_type']) || empty($currentPostType['post_type']))
+            {
+                return redirect(route('dashboard'));
+            }
+            
+            return $next($request);
+        });
+        
+    }
+    private function check_post_type($req) {
         $currentPostType = get_current_post_type($req->input('post_type'));
         if (!$currentPostType || !isset($currentPostType['post_type']) || empty($currentPostType['post_type']))
-            return redirect(route('dashboard'));
+            return false;
+        
+        return $currentPostType;
+    }
+    private function add_edit_and_listing($req, $currentPostType) {
+        $post1 = Post::query();
+        $post2 = Post::query();
         
         $name = 'post';
         $totalRecords = $post1->where('post_status', '!=', 'trashed')->where(['post_type' => $currentPostType['post_type']])->count();
@@ -39,12 +69,47 @@ class PostController extends Controller
         else if ($req->input('status') == 'trash') {
             $post2->where(['post_status' => 'trashed']);
         }
-        return view('Admin.Post.index', ['postType' => $currentPostType['post_type'], 'currentPostType' => $currentPostType, 'totalRecords' => $totalRecords, 'data' => $post2->select(['posts.id', 'posts.title', 'posts.slug', 'posts.featured_image', 'posts.created_at'])->orderBy('posts.id', 'DESC')->paginate(10)]);
+        return view('Admin.Post.index', ['postType' => $currentPostType['post_type'], 'currentPostType' => $currentPostType, 'totalRecords' => $totalRecords, 'data' => $post2->select(['posts.id', 'posts.title', 'posts.slug', 'posts.featured_image', 'posts.created_at', 'posts.updated_at'])->orderBy('posts.id', 'DESC')->paginate(10)]);
     }
     public function index(Request $req) {
-        return $this->add_edit_and_listing($req);
+        
+        if (__c_user()->is_super_admin != 1) {
+            if ($id) {
+                if (Post::where(['id' => $id, 'user_id' => __c_user()->id])->count() == 0) {
+                    return back()->with('errormsg', 'Permission Denied');
+                }
+            }
+            else {
+                if (Post::whereIn('id', $req->input('action_ids'))->where(['user_id' => __c_user()->id])->count() == 0) {
+                    return back()->with('errormsg', 'Permission Denied');
+                }
+            }
+        }
+        $currentPostType = $this->check_post_type($req);
+        if($currentPostType === false){
+            return redirect(route('dashboard'));
+        }
+
+        $currentPostType = get_current_post_type($req->input('post_type'));
+        return $this->add_edit_and_listing($req, $currentPostType);
     }
     public function add(Request $req) {
+        if (__c_user()->is_super_admin != 1) {
+            if ($id) {
+                if (Post::where(['id' => $id, 'user_id' => __c_user()->id])->count() == 0) {
+                    return back()->with('errormsg', 'Permission Denied');
+                }
+            }
+            else {
+                if (Post::whereIn('id', $req->input('action_ids'))->where(['user_id' => __c_user()->id])->count() == 0) {
+                    return back()->with('errormsg', 'Permission Denied');
+                }
+            }
+        }
+        $currentPostType = $this->check_post_type($req);
+        if($currentPostType === false){
+            return redirect(route('dashboard'));
+        }
         if ($req->isMethod('post')) {
             $data = $req->all();
             $response = ['status' => [], 'errors' => []];
@@ -86,18 +151,28 @@ class PostController extends Controller
             return $response;
         }
         else {
-            $currentPostType = get_current_post_type($req->input('post_type'));
             return view('Admin.Post.add-edit', ['postType' => $currentPostType['post_type'], 'currentPostType' => $currentPostType]);
         }
     }
     public function edit($id, Request $req) {
+        
         if (__c_user()->is_super_admin != 1) {
-            if (Post::where(['id' => $id, 'user_id' => __c_user()->id])->count() == 0) {
-                $response['errors'] = 'Permission Denied';
-                $response['status'] = 'permissiondenied';
-                return response()->json($response ,403);
+            if ($id) {
+                if (Post::where(['id' => $id, 'user_id' => __c_user()->id])->count() == 0) {
+                    return back()->with('errormsg', 'Permission Denied');
+                }
+            }
+            else {
+                if (Post::whereIn('id', $req->input('action_ids'))->where(['user_id' => __c_user()->id])->count() == 0) {
+                    return back()->with('errormsg', 'Permission Denied');
+                }
             }
         }
+        $currentPostType = $this->check_post_type($req);
+        if($currentPostType === false){
+            return redirect(route('dashboard'));
+        }
+
         $post = Post::findOrfail($id);
         if ($req->isMethod('post')) {
             $data = $req->all();
@@ -151,11 +226,13 @@ class PostController extends Controller
         }
         else {
             if ($req->ajax()) {
+                // dd($post);
+                // die('test');
                 $response = ['status' => 'success', 'item' => $post];
                 return $response;
             }
             else {
-                return $this->add_edit_and_listing($req);
+                return view('Admin.Post.add-edit', ['postType' => $currentPostType['post_type'], 'currentPostType' => $currentPostType,]);
             }
         }
 
@@ -173,6 +250,11 @@ class PostController extends Controller
                 }
             }
         }
+        $currentPostType = $this->check_post_type($req);
+        if($currentPostType === false){
+            return redirect(route('dashboard'));
+        }
+        
         if ($id) {
             if (Post::where(['id' => $id])->where('post_status', '!=', 'trashed')->count() > 0) {
                Post::where(['id' => $id])->where('post_status', '!=', 'trashed')->update(['post_status' => 'trashed']);

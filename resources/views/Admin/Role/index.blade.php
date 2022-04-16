@@ -105,7 +105,7 @@
                                                 @endif
 
                                             </td>
-                                            <td>{{ $record->created_at->diffForHumans() }}</td>
+                                            <td>{!! get_admin_panel_dates($record) !!}</td>
                                             <td class="action">
                                                 @if($record->id != 1 && $record->id != 2)
                                                 

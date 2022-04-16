@@ -94,7 +94,7 @@
                                             <td>{{ $record->email }}</td>
                                             <td><img src="{{ __get_user_image($record->image) }}" width="50"></td>
                                             <td>{{ $record->role->role }}</td>
-                                            <td>{{ $record->created_at->diffForHumans() }}</td>
+                                            <td>{!! get_admin_panel_dates($record) !!}</td>
                                             <td class="action">
                                                 @if(\Request::input('status') != 'trash')
                                                 <a href="{{ route('edit-'.__word_format($name), $record->id) }}" class="edit-record"><i class="fa fa-pencil-alt"></i></a>

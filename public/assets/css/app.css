@@ -238,8 +238,21 @@ ul.perm-list {
     display: block;
 }
 
-
-
+.radio-wrap code.t-d-f {
+    margin-left: 50px;
+}
+.radio-wrap span.d-f-p {
+    width: 180px;
+    display: inline-block;
+}
+.radio-wrap .radio-btn-wrap.form-check {
+    height: 30px;
+}
+.radio-wrap input.cus-date-format {
+    width: 53px;
+    margin-left: 50px;
+    font-size: 11px;
+}
 
 @media screen and (max-width: 676px) {
 
