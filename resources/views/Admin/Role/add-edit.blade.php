@@ -17,7 +17,7 @@
                             <input type="text" class="form-control" placeholder="Role" name="role" required>
                             <small class="error-msg"></small>
                         </div>
-                        @foreach(__get_roles_permissions() as $key2 => $role_p)
+                        @foreach(get_roles_permissions() as $key2 => $role_p)
                                     
                         <div class="form-group-wrap">
                             <div class="form-c-wrap">

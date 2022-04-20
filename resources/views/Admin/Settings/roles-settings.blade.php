@@ -19,7 +19,7 @@
             <div class="card shadow mb-4">
                 
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">{{ __word_format($name, 'ucfirst')  }}</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">{{ word_format($name, 'ucfirst')  }}</h6>
                 </div>
                 
                 <div class="card-body">
@@ -42,7 +42,7 @@
                                         <h6>{{$role->role}}</h6>
                                         <input type="checkbox" class="checked-roles">
                                     </div>
-                                    @foreach(__get_roles_permissions() as $key2 => $role_p)
+                                    @foreach(get_roles_permissions() as $key2 => $role_p)
                                     @php 
                                     $permissions = json_decode($role->permissions) ? json_decode($role->permissions) : [];
                                     @endphp

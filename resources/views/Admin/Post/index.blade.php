@@ -6,7 +6,7 @@
     
 	<div class="main-wrap  {{ $postType.'-wrap' }}">
         <form>
-            <input type="hidden" name="post_type" value="{{ $currentPostType['post_type'] }}">
+            <input type="hidden" name="post_type" value="{{ $postType }}">
             @if(session('msg'))
             <div class="card mb-4 border-left-success">
                 <div class="card-body">
@@ -23,7 +23,7 @@
             </div>
             @endif
             <div class="btn-wrap">
-                <a  href="{{ get_admin_post_type_url(['name' => 'add-post'], $currentPostType['post_type']) }}" class="btn btn-primary btn-icon-split  f-action-switcher add-new-record ">
+                <a  href="{{ get_admin_post_type_url(['name' => 'add-post'], $postType) }}" class="btn btn-primary btn-icon-split  f-action-switcher add-new-record ">
                     <span class="icon text-white-50">
                         <i class="fas fa-plus"></i>
                     </span>
@@ -43,10 +43,10 @@
 
                         <div class="records-status-wrap">
                             <ul>
-                                <li><a href="{{ get_admin_post_type_url(['name' => 'posts'], $currentPostType['post_type']) }}">All</a></li>
-                                <li><a href="{{ get_admin_post_type_url(['name' => 'posts'], $currentPostType['post_type']).'&status=published' }}">Published</a></li>
-                                <li><a href="{{ get_admin_post_type_url(['name' => 'posts'], $currentPostType['post_type']).'&status=drafts' }}">Drafts</a></li>
-                                <li><a href="{{ get_admin_post_type_url(['name' => 'posts'], $currentPostType['post_type']).'&status=trash' }}">Trash</a></li>
+                                <li class=" {{ \Request::input('status') == '' ? 'active' : '' }} "><a href="{{ get_admin_post_type_url(['name' => 'posts'], $postType) }}">All</a></li>
+                                <li class=" {{ \Request::input('status') == 'published' ? 'active' : '' }} "><a href="{{ get_admin_post_type_url(['name' => 'posts'], $postType).'&status=published' }}">Published</a></li>
+                                <li class=" {{ \Request::input('status') == 'drafts' ? 'active' : '' }} "><a href="{{ get_admin_post_type_url(['name' => 'posts'], $postType).'&status=drafts' }}">Drafts</a></li>
+                                <li class=" {{ \Request::input('status') == 'trash' ? 'active' : '' }} "><a href="{{ get_admin_post_type_url(['name' => 'posts'], $postType).'&status=trash' }}">Trash</a></li>
                             </ul>
                         </div>
                     </div>
@@ -56,10 +56,10 @@
                             <select class="rec-action" name="rec_action">
                                 <option value="">-----------</option>
                                 @if(\Request::input('status') != 'trash')
-                                <option value="trash" data-form="{{ get_admin_post_type_url(['name' => 'delete-post'], $currentPostType['post_type']) }}">Trash</option>
+                                <option value="trash" data-form="{{ get_admin_post_type_url(['name' => 'delete-post'], $postType) }}">Trash</option>
                                 @elseif(\Request::input('status') == 'trash')
-                                <option value="delete" data-form="{{ get_admin_post_type_url(['name' => 'delete-post'], $currentPostType['post_type']) }}">Delete</option>
-                                <option value="restore" data-form="{{ get_admin_post_type_url(['name' => 'restore-post'], $currentPostType['post_type']) }}">Restore</option>
+                                <option value="delete" data-form="{{ get_admin_post_type_url(['name' => 'delete-post'], $postType) }}">Delete</option>
+                                <option value="restore" data-form="{{ get_admin_post_type_url(['name' => 'restore-post'], $postType) }}">Restore</option>
                                 @endif
                             </select>
                             
@@ -90,7 +90,9 @@
                                     <th>ID</th>
                                     <th>Title</th>
                                     <th>Slug</th>
+                                    @if($postType != 'page')
                                     <th>Category</th>
+                                    @endif
                                     <th>Featured Image</th>
                                     <th>Date</th>
                                     <th>Action</th>
@@ -105,18 +107,20 @@
                                             <td>{{ $record->id }}</td>
                                             <td>{{ $record->title }}</td>
                                             <td>{{ $record->slug }}</td>
-                                            <td><p>{!! implode("<br> ", __get_category_string_format($record->id)) !!}</p></td>
-                                            <td><img src="{{ __get_image($record->featured_image) }}" width="50"></td>
+                                            @if($postType != 'page')
+                                            <td><p>{!! implode("<br> ", get_category_string_format($record->id)) !!}</p></td>
+                                            @endif
+                                            <td><img src="{{ get_image($record->featured_image) }}" width="50"></td>
                                             <td>{!! get_admin_panel_dates($record) !!}</td>
                                             <td class="action">
                                                 @if(\Request::input('status') != 'trash')
-                                                <a href="{{ get_admin_post_type_url(['name' => 'edit-post', 'id' => $record->id], $currentPostType['post_type']) }}" class="edit-record"><i class="fa fa-pencil-alt"></i></a>
+                                                <a href="{{ get_admin_post_type_url(['name' => 'edit-post', 'id' => $record->id], $postType) }}" class="edit-record"><i class="fa fa-pencil-alt"></i></a>
                                                 @else
-                                                <a href="{{ get_admin_post_type_url(['name' => 'restore-post', 'id' => $record->id], $currentPostType['post_type']) }}">
+                                                <a href="{{ get_admin_post_type_url(['name' => 'restore-post', 'id' => $record->id], $postType) }}">
                                                     <i class="fa fa-undo"></i>
                                                 </a>
                                                 @endif
-                                                <a href="{{ get_admin_post_type_url(['name' => 'delete-post', 'id' => $record->id], $currentPostType['post_type']) }}" class="{{ \Request::input('status') == 'trash' ? 'danger-delete' : '' }}">
+                                                <a href="{{ get_admin_post_type_url(['name' => 'delete-post', 'id' => $record->id], $postType) }}" class="{{ \Request::input('status') == 'trash' ? 'danger-delete' : '' }}">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
                                             </td>

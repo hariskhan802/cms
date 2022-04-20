@@ -20,6 +20,17 @@
                 'post_type' => 'page',
             ]
         );
+
+        register_taxonomy([
+                'name' => 'Categories',
+                'singular_name' => 'Category',
+                'public' => true,
+                'menu_position' => 5,
+                'slug' => 'category',
+                'post_type' => 'post',
+                'taxonomy' => 'category',
+            ]
+        );
 	}
 	add_action('init', 'add_default_post_type');
 ?>

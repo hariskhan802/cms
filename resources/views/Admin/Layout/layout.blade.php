@@ -8,7 +8,7 @@
 @endphp
 <script type="text/javascript">
     localStorage.setItem('app_url', '{{ url('') }}');
-    localStorage.setItem('image_extensions', '{{ __get_image_extensions("string") }}');
+    localStorage.setItem('image_extensions', '{{ get_image_extensions("string") }}');
     var postType = '{{ $postType }}';
 </script>
 {!! do_action('wp_head') !!}
@@ -24,11 +24,13 @@
     $atts = [
         'page-name' => $name,
         'edit-page-id' => $id,
-        'parent-page-name' => __word_format($name, 'plural')
+        'parent-page-name' => word_format($name, 'plural')
     ];
-
+    if (Route::is('edit-*')  ) {
+        $atts['edit-page-url'] = route(\Request::route()->getName(), \Request::route()->parameter('id'));
+    }
 @endphp
-<body id="page-top" class="{{ __get_admin_body_classes(str_replace(' ','-', $name).'-m-wrap '.$postType) }}" {{ __get_admin_body_attributes($atts) }}>
+<body id="page-top" class="{{ get_admin_body_classes(str_replace(' ','-', $name).'-m-wrap '.$postType) }}" {{ get_admin_body_attributes($atts) }}>
 
     <!-- Page Wrapper -->
     <div id="wrapper">

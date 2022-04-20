@@ -16,9 +16,8 @@ class AdminCheck
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!__c_user()  && $request->route()->getName() != 'admin-login') {
-
-            return redirect(route('admin-login').'?redirect_to='.urlencode(route($request->route()->getName())))->with('errormsg', 'You must be logged In!');
+        if (!c_user()  && $request->route()->getName() != 'admin-login') {
+            return redirect(route('admin-login').'?redirect_to='.urlencode($request->fullUrl()))->with('errormsg', 'You must be logged In!');
         }
         
         return $next($request);

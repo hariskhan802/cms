@@ -22,7 +22,7 @@
             <div class="card shadow mb-4">
                 
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">{{ __word_format($name, 'ucfirst')  }}</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">{{ word_format($name, 'ucfirst')  }}</h6>
                 </div>
                 
                 <div class="card-body">
@@ -46,24 +46,24 @@
                                         </div>
                                         <div class="form-group">
                                             <label>Name</label>
-                                            <input type="text" class="form-control" placeholder="Name" name="name" value="{{ __c_user()->name }}" required>
+                                            <input type="text" class="form-control" placeholder="Name" name="name" value="{{ c_user()->name }}" required>
                                             <small class="error-msg"></small>
                                         </div>
                                         <div class="form-group">
                                             <label>Email</label>
-                                            <input type="email" class="form-control" placeholder="Email" name="email" value="{{ __c_user()->email }}"  required>
+                                            <input type="email" class="form-control" placeholder="Email" name="email" value="{{ c_user()->email }}"  required>
                                             <small class="error-msg"></small>
                                         </div>
                                         
                                         <div class="form-group img-f-g">
                                             <label>Image</label>
-                                            <input type="file" name="image" accept="image/*" {{ __c_user()->image == '' ? 'required' : '' }} />
+                                            <input type="file" name="image" accept="image/*" {{ c_user()->image == '' ? 'required' : '' }} />
                                             <small class="error-msg"></small>
                                             
-                                            <img src="{{ __get_user_image(__c_user()->image) }}" width="50">
+                                            <img src="{{ get_user_image(c_user()->image) }}" width="50">
                                         </div>
                                         <div class="form-group">
-                                            <input type="hidden" name="_image" value="{{__c_user()->image}}">
+                                            <input type="hidden" name="_image" value="{{c_user()->image}}">
                                             <input type="hidden" name="_token" value="{{ @csrf_token() }}">
                                             <input type="submit" name="submit" value="Update" class="btn btn-primary pull-right">
                                             

@@ -17,6 +17,7 @@ class CreateOptionsTable extends Migration
             $table->id();
             $table->string('option_name')->unique();
             $table->longText('option_value');
+            $table->string('autoload')->default('yes');
             $table->timestamps();
         });
     }

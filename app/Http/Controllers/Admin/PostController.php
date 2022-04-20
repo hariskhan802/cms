@@ -4,59 +4,42 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Post;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Post;
 use File;
 use Image;
 
 class PostController extends Controller
 {
+    private $currentPostType;
     public function __construct(Request $req) {
         $this->middleware(function ($request, $next) use ($req) {
-            if (__c_user()->is_super_admin != 1) {
-                var_dump($req->route()->parameter('id')); die;
-                if ($id) {
-                    if (Post::where(['id' => $id, 'user_id' => __c_user()->id])->count() == 0) {
-                        return back()->with('errormsg', 'Permission Denied');
-                    }
-                }
-                else {
-                    if (Post::whereIn('id', $req->input('action_ids'))->where(['user_id' => __c_user()->id])->count() == 0) {
-                        return back()->with('errormsg', 'Permission Denied');
-                    }
-                }
-            }
-            
-            $currentPostType = get_current_post_type($req->input('post_type'));
-            if (!$currentPostType || !isset($currentPostType['post_type']) || empty($currentPostType['post_type']))
-            {
-                return redirect(route('dashboard'));
-            }
-            
+            $this->currentPostType = get_current_post_type($req->input('post_type'));
+            if (!$this->currentPostType || !isset($this->currentPostType['post_type']) || empty($this->currentPostType['post_type']))
+                return redirect(route('dashboard'))->with('errormsg', 'Invalid Post type');
+            if (!check_own_record_or_has_permission(Post::class, $req))            
+                return redirect(route('dashboard'))->with('errormsg', 'Permission Denied');
+
             return $next($request);
         });
         
     }
-    private function check_post_type($req) {
-        $currentPostType = get_current_post_type($req->input('post_type'));
-        if (!$currentPostType || !isset($currentPostType['post_type']) || empty($currentPostType['post_type']))
-            return false;
-        
-        return $currentPostType;
-    }
-    private function add_edit_and_listing($req, $currentPostType) {
+    
+    private function add_edit_and_listing($req) {
         $post1 = Post::query();
         $post2 = Post::query();
         
         $name = 'post';
-        $totalRecords = $post1->where('post_status', '!=', 'trashed')->where(['post_type' => $currentPostType['post_type']])->count();
-        $post2->where(['post_type' => $currentPostType['post_type']]);
+        if (c_user()->is_super_admin != 1) {
+            $post1->where('posts.user_id', '=', c_user()->id);
+            $post2->where('posts.user_id', '=', c_user()->id);
+        }
+        $totalRecords = $post1->where('post_status', '!=', 'trashed')->where(['post_type' => $this->currentPostType['post_type']])->count();
+        $post2->where(['post_type' => $this->currentPostType['post_type']]);
         if ($req->input('search')) {
             $post2->where('posts.title', 'like', "%{$req->input('search')}%");
         }
-        if (__c_user()->is_super_admin != 1) {
-            $post2->where('posts.user_id', '=', __c_user()->id);
-        }
+        
         if ($req->input('status') == '') {
             $post2->where(['post_status' => 'published'])->orWhere(['post_status' => 'drafted']);
         }
@@ -69,47 +52,14 @@ class PostController extends Controller
         else if ($req->input('status') == 'trash') {
             $post2->where(['post_status' => 'trashed']);
         }
-        return view('Admin.Post.index', ['postType' => $currentPostType['post_type'], 'currentPostType' => $currentPostType, 'totalRecords' => $totalRecords, 'data' => $post2->select(['posts.id', 'posts.title', 'posts.slug', 'posts.featured_image', 'posts.created_at', 'posts.updated_at'])->orderBy('posts.id', 'DESC')->paginate(10)]);
+        return view('Admin.Post.index', ['postType' => $this->currentPostType['post_type'], 'currentPostType' => $this->currentPostType, 'totalRecords' => $totalRecords, 'data' => $post2->select(['posts.id', 'posts.title', 'posts.slug', 'posts.featured_image', 'posts.created_at', 'posts.updated_at'])->orderBy('posts.id', 'DESC')->paginate(10)]);
     }
     public function index(Request $req) {
         
-        if (__c_user()->is_super_admin != 1) {
-            if ($id) {
-                if (Post::where(['id' => $id, 'user_id' => __c_user()->id])->count() == 0) {
-                    return back()->with('errormsg', 'Permission Denied');
-                }
-            }
-            else {
-                if (Post::whereIn('id', $req->input('action_ids'))->where(['user_id' => __c_user()->id])->count() == 0) {
-                    return back()->with('errormsg', 'Permission Denied');
-                }
-            }
-        }
-        $currentPostType = $this->check_post_type($req);
-        if($currentPostType === false){
-            return redirect(route('dashboard'));
-        }
-
-        $currentPostType = get_current_post_type($req->input('post_type'));
-        return $this->add_edit_and_listing($req, $currentPostType);
+        return $this->add_edit_and_listing($req);
     }
     public function add(Request $req) {
-        if (__c_user()->is_super_admin != 1) {
-            if ($id) {
-                if (Post::where(['id' => $id, 'user_id' => __c_user()->id])->count() == 0) {
-                    return back()->with('errormsg', 'Permission Denied');
-                }
-            }
-            else {
-                if (Post::whereIn('id', $req->input('action_ids'))->where(['user_id' => __c_user()->id])->count() == 0) {
-                    return back()->with('errormsg', 'Permission Denied');
-                }
-            }
-        }
-        $currentPostType = $this->check_post_type($req);
-        if($currentPostType === false){
-            return redirect(route('dashboard'));
-        }
+        
         if ($req->isMethod('post')) {
             $data = $req->all();
             $response = ['status' => [], 'errors' => []];
@@ -117,9 +67,9 @@ class PostController extends Controller
                 'title' => 'required',
                 'slug' => 'required|unique:posts',
                 'content' => 'required',
-                'featured_image' => 'required||file|max:1000|mimes:'.__get_image_extensions('string'),
+                'featured_image' => 'required||file|max:1000|mimes:'.get_image_extensions('string'),
             ]);
-            $data['user_id'] = __c_user()->id;
+            $data['user_id'] = c_user()->id;
 
             $data['post_status'] = 'drafted';
             if ($data['_status'] == 'Publish') {
@@ -151,28 +101,13 @@ class PostController extends Controller
             return $response;
         }
         else {
-            return view('Admin.Post.add-edit', ['postType' => $currentPostType['post_type'], 'currentPostType' => $currentPostType]);
+            return view('Admin.Post.add-edit', ['postType' => $this->currentPostType['post_type'], 'currentPostType' => $this->currentPostType]);
         }
     }
     public function edit($id, Request $req) {
+        /* if (!check_own_record_or_has_permission(Post::class, $req)) 
+            return back()->with('errormsg', 'Permission Denied'); */
         
-        if (__c_user()->is_super_admin != 1) {
-            if ($id) {
-                if (Post::where(['id' => $id, 'user_id' => __c_user()->id])->count() == 0) {
-                    return back()->with('errormsg', 'Permission Denied');
-                }
-            }
-            else {
-                if (Post::whereIn('id', $req->input('action_ids'))->where(['user_id' => __c_user()->id])->count() == 0) {
-                    return back()->with('errormsg', 'Permission Denied');
-                }
-            }
-        }
-        $currentPostType = $this->check_post_type($req);
-        if($currentPostType === false){
-            return redirect(route('dashboard'));
-        }
-
         $post = Post::findOrfail($id);
         if ($req->isMethod('post')) {
             $data = $req->all();
@@ -181,10 +116,10 @@ class PostController extends Controller
                 'title' => 'required',
                 'slug' => 'required|unique:posts',
                 'content' => 'required',
-                'featured_image' => 'required|file|max:1000|mimes:'.__get_image_extensions('string'),
+                'featured_image' => 'required|file|max:1000|mimes:'.get_image_extensions('string'),
             ];
             if ($data['_featured_image'] == $post->featured_image)
-                $vArgs['featured_image'] = 'file|max:1000|mimes:'.__get_image_extensions('string');
+                $vArgs['featured_image'] = 'file|max:1000|mimes:'.get_image_extensions('string');
             
             if ($data['slug'] == $post->slug)
                 unset($vArgs['slug']);
@@ -232,28 +167,14 @@ class PostController extends Controller
                 return $response;
             }
             else {
-                return view('Admin.Post.add-edit', ['postType' => $currentPostType['post_type'], 'currentPostType' => $currentPostType,]);
+                return view('Admin.Post.add-edit', ['postType' => $this->currentPostType['post_type'], 'currentPostType' => $this->currentPostType,]);
             }
         }
 
     }
     public function delete($id = null, Request $req) {
-        if (__c_user()->is_super_admin != 1) {
-            if ($id) {
-                if (Post::where(['id' => $id, 'user_id' => __c_user()->id])->count() == 0) {
-                    return back()->with('errormsg', 'Permission Denied');
-                }
-            }
-            else {
-                if (Post::whereIn('id', $req->input('action_ids'))->where(['user_id' => __c_user()->id])->count() == 0) {
-                    return back()->with('errormsg', 'Permission Denied');
-                }
-            }
-        }
-        $currentPostType = $this->check_post_type($req);
-        if($currentPostType === false){
-            return redirect(route('dashboard'));
-        }
+        /* if (!check_own_record_or_has_permission(Post::class, $req)) 
+            return back()->with('errormsg', 'Permission Denied'); */
         
         if ($id) {
             if (Post::where(['id' => $id])->where('post_status', '!=', 'trashed')->count() > 0) {
@@ -287,18 +208,8 @@ class PostController extends Controller
     }
 
     public function restore($id = null, Request $req) {
-        if (__c_user()->is_super_admin != 1) {
-            if ($id) {
-                if (Post::where(['id' => $id, 'user_id' => __c_user()->id])->count() == 0) {
-                    return back()->with('errormsg', 'Permission Denied');
-                }
-            }
-            else {
-                if (Post::whereIn('id', $req->input('action_ids'))->where(['user_id' => __c_user()->id])->count() == 0) {
-                    return back()->with('errormsg', 'Permission Denied');
-                }
-            }
-        }
+        /* if (!check_own_record_or_has_permission(Post::class, $req)) 
+            return back()->with('errormsg', 'Permission Denied'); */
 
         if ($id) {
             if (Post::where(['id' => $id, 'post_status' => 'trashed'])->count() > 0) {
@@ -318,9 +229,9 @@ class PostController extends Controller
     }
     /*public function posts_ajax(Request $req) {
         
-        // return __data_table($req->all(), Post::class, ['id', 'title', 'template_id AS template', 'featured_image', 'created_at AS date'], )['backend'];
+        // return data_table($req->all(), Post::class, ['id', 'title', 'template_id AS template', 'featured_image', 'created_at AS date'], )['backend'];
     
-        return __data_table(['inputs' => $req->all(), 'table' => Post::class, 'columns' => ['id', 'title', 'template_id AS template', 'featured_image', 'created_at AS date'], 'tColumns' => ['ID', 'Title', 'Template', 'Featured Image', 'Date']])['backend'];
+        return data_table(['inputs' => $req->all(), 'table' => Post::class, 'columns' => ['id', 'title', 'template_id AS template', 'featured_image', 'created_at AS date'], 'tColumns' => ['ID', 'Title', 'Template', 'Featured Image', 'Date']])['backend'];
     }*/
 
 }

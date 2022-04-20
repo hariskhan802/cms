@@ -75,7 +75,7 @@
             return str;
         }
         
-        function __is_image($image = '') {
+        function is_image($image = '') {
             $image_extensions = localStorage.getItem('image_extensions');
             $image = $image+'';
             $imageExtensions = $image_extensions.split(',');
@@ -125,15 +125,19 @@
             return true;
         }
         function edit_page_req($mThis = null) {
+            console.log($mThis);
             $('#add-edit-modal form .modal-title').text('Edit');
             var formAction = '';
             if ($mThis) {
                 formAction = $($mThis).attr('href');
             }
-            else {
-                formAction = app_url+'/admin/'+$('.edit-page').attr('page-name')+'/edit/'+$('.edit-page').attr('edit-page-id');
+            else if ($('body').hasClass('post-type')) {
+                formAction = $('body.post-type .post-type-form .form-wrap > form').attr('action');
             }
-            
+            else {
+                formAction = $('body.edit-page').attr('edit-page-url');
+            }
+            console.log(formAction);
             $('.user-m-wrap .password-field').hide();
             $('[type="submit"][value="Save Draft"]').hide();
             $('#add-edit-modal form').attr('action', formAction)
@@ -154,7 +158,7 @@
                     $('[name="_status"]').val(post_status);
                     
                     $.each(item,function(k, v) {
-                        if (__is_image(v)) {
+                        if (is_image(v)) {
                             
                             $('[name="'+k+'"]').removeAttr('required');
                             $('[name="_'+k+'"]').val(v);
@@ -277,11 +281,13 @@
                     setTimeout(function(){
                         $('#add-edit-modal').modal('toggle');
                         if ($('.edit-page').length > 0) {
-                            window.location.href = app_url+'/admin/'+$('.edit-page').attr('parent-page-name')
+                            window.location.href = app_url+'/admin/'+$('.edit-page').attr('parent-page-name')+'/?post_type='+postType;
                         }
                         else {
                             if (postType != '') {
-                                window.location.href = app_url+'/admin/posts/?post_type='+postType;
+                                // console.log( app_url+'/admin/'+$('.post-type').attr('parent-page-name')+'/?post_type='+postType)
+                                // return;
+                                window.location.href = app_url+'/admin/'+$('.post-type').attr('parent-page-name')+'/?post_type='+postType;
                             }else{
                                 location.reload();
                             }
@@ -301,8 +307,8 @@
             $('#add-edit-modal form .modal-title').text('Add New');
         });
         $('[name="submit"][value="Publish"]').click(function() {
-            if ($('#add-edit-modal form').length > 0) {
-                if ($('#add-edit-modal form')[0].checkValidity()) {
+            if ($(this).closest('form').length > 0) {
+                if ($(this).closest('form')[0].checkValidity()) {
                     $('[name="_status"]').val($(this).val())
                 }
             }

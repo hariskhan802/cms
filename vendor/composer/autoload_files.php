@@ -35,5 +35,5 @@ return array(
     'f0906e6318348a765ffb6eb24e0d0938' => $vendorDir . '/laravel/framework/src/Illuminate/Foundation/helpers.php',
     '58571171fd5812e6e447dce228f52f4d' => $vendorDir . '/laravel/framework/src/Illuminate/Support/helpers.php',
     'ec07570ca5a812141189b1fa81503674' => $vendorDir . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
-    '19887901f4279852e2d90c1802f17c95' => $baseDir . '/cms/includes/main.php',
+    'ede964846ecd782976867dadebe3c30b' => $baseDir . '/cms/main.php',
 );

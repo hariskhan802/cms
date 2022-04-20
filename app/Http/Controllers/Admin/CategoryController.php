@@ -20,9 +20,9 @@ class CategoryController extends Controller
         if ($req->input('search')) {
             $category2->where('categories.title', 'like', "%{$req->input('search')}%");
         }
-        if (__c_user()->is_super_admin != 1) {
-            $category2->where('categories.user_id', '=', __c_user()->id);
-            $category3->where('categories.user_id', '=', __c_user()->id);
+        if (c_user()->is_super_admin != 1) {
+            $category2->where('categories.user_id', '=', c_user()->id);
+            $category3->where('categories.user_id', '=', c_user()->id);
         }
         if ($req->input('status') == '') {
             $category2->where(['status' => 'published']);
@@ -45,9 +45,9 @@ class CategoryController extends Controller
             'title' => 'required',
             'slug' => 'required|unique:categories',
             'description' => 'required',
-            'featured_image' => 'required||file|max:1000|mimes:'.__get_image_extensions('string'),
+            'featured_image' => 'required||file|max:1000|mimes:'.get_image_extensions('string'),
         ]);
-        $data['user_id'] = __c_user()->id;
+        $data['user_id'] = c_user()->id;
         if ($data['_status'] == 'Publish') {
             $data['status'] = 'published';
         }
@@ -74,8 +74,8 @@ class CategoryController extends Controller
         return $response;
     }
     public function edit($id, Request $req) {
-        if (__c_user()->is_super_admin != 1) {
-            if (Category::where(['id' => $id, 'user_id' => __c_user()->id])->count() == 0) {
+        if (c_user()->is_super_admin != 1) {
+            if (Category::where(['id' => $id, 'user_id' => c_user()->id])->count() == 0) {
                 $response['errors'] = 'Permission Denied';
                 $response['status'] = 'permissiondenied';
                 return response()->json($response ,403);
@@ -90,11 +90,11 @@ class CategoryController extends Controller
                 'slug' => 'required|unique:categories',
                 'parent_id' => 'required',
                 'description' => 'required',
-                'featured_image' => 'required|file|max:1000|mimes:'.__get_image_extensions('string'),
+                'featured_image' => 'required|file|max:1000|mimes:'.get_image_extensions('string'),
             ];
             $data['menu_order'] = 0;
             if ($data['_featured_image']  == $category->featured_image)
-                $vArgs['featured_image'] = 'file|max:1000|mimes:'.__get_image_extensions('string');
+                $vArgs['featured_image'] = 'file|max:1000|mimes:'.get_image_extensions('string');
             
             if ($data['slug'] == $category->slug)
                 unset($vArgs['slug']);
@@ -141,14 +141,14 @@ class CategoryController extends Controller
 
     }
     public function delete($id = null, Request $req) {
-        if (__c_user()->is_super_admin != 1) {
+        if (c_user()->is_super_admin != 1) {
             if ($id) {
-                if (Category::where(['id' => $id, 'user_id' => __c_user()->id])->count() == 0) {
+                if (Category::where(['id' => $id, 'user_id' => c_user()->id])->count() == 0) {
                     return back()->with('errormsg', 'Permission Denied');
                 }
             }
             else {
-                if (Category::whereIn('id', $req->input('action_ids'))->where(['user_id' => __c_user()->id])->count() == 0) {
+                if (Category::whereIn('id', $req->input('action_ids'))->where(['user_id' => c_user()->id])->count() == 0) {
                     return back()->with('errormsg', 'Permission Denied');
                 }
             }

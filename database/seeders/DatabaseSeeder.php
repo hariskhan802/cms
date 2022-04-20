@@ -16,8 +16,9 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
         DB::table('users')->insert([
+            [
                 'name' => 'haris',
-                'email' => 'haris@gmail.com',
+                'email' => 'haris@abc.com',
                 'password' => bcrypt('haris123'),
                 'image' => '',
                 'email_verified_at' => now(),
@@ -25,7 +26,19 @@ class DatabaseSeeder extends Seeder
                 'is_super_admin' => '1',
                 'created_at' => now(),
                 'updated_at' => now(),
-            ]);
+            ],
+            [
+                'name' => 'ali',
+                'email' => 'ali@abc.com',
+                'password' => bcrypt('ali123'),
+                'image' => '',
+                'email_verified_at' => now(),
+                'role_id' => '2',
+                'is_super_admin' => '0',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        ]);
         DB::table('templates')->insert([
                 'title' => 'Template 1',
                 'content' => 'Template 1',
@@ -113,10 +126,66 @@ class DatabaseSeeder extends Seeder
                     ]];
         DB::table('categories')->insert($cats);
 
-        DB::table('posts')->insert([
-            [
-                'title' => 'Post 1',
-                'slug' => 'post-1',
+        // DB::table('posts')->insert([
+        //     [
+        //         'title' => 'Post 1',
+        //         'slug' => 'post-1',
+        //         'content' => 'test',
+        //         'featured_image' => '',
+        //         'post_status' => 'published',
+        //         'post_type' => 'post',
+        //         'user_id' => 1,
+        //         'menu_order' => '0',
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+                
+        //     ],
+        //     [
+        //         'title' => 'Post 2',
+        //         'slug' => 'post-2',
+        //         'content' => 'test',
+        //         'featured_image' => '',
+        //         'post_status' => 'published',
+        //         'post_type' => 'post',
+        //         'user_id' => 1,
+        //         'menu_order' => '0',
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+                
+        //     ],
+        //     [
+        //         'title' => 'Page 1',
+        //         'slug' => 'page-1',
+        //         'content' => 'test',
+        //         'featured_image' => '',
+        //         'post_status' => 'published',
+        //         'post_type' => 'page',
+        //         'user_id' => 1,
+        //         'menu_order' => '0',
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+                
+        //     ],
+        //     [
+        //         'title' => 'Page 2',
+        //         'slug' => 'page-2',
+        //         'content' => 'test',
+        //         'featured_image' => '',
+        //         'post_status' => 'published',
+        //         'post_type' => 'page',
+        //         'user_id' => 1,
+        //         'menu_order' => '0',
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+                
+        //     ],
+        // ]);
+        $postArr = [];
+        for ($i=1; $i <= 5000; $i++) { 
+            # code...
+            $postArr [] = [
+                'title' => 'Post '.$i,
+                'slug' => 'post-'.$i,
                 'content' => 'test',
                 'featured_image' => '',
                 'post_status' => 'published',
@@ -125,53 +194,28 @@ class DatabaseSeeder extends Seeder
                 'menu_order' => '0',
                 'created_at' => now(),
                 'updated_at' => now(),
-                
-            ],
-            [
-                'title' => 'Post 2',
-                'slug' => 'post-2',
-                'content' => 'test',
-                'featured_image' => '',
-                'post_status' => 'published',
-                'post_type' => 'post',
-                'user_id' => 1,
-                'menu_order' => '0',
-                'created_at' => now(),
-                'updated_at' => now(),
-                
-            ],
-            [
-                'title' => 'Page 1',
-                'slug' => 'page-1',
-                'content' => 'test',
-                'featured_image' => '',
-                'post_status' => 'published',
-                'post_type' => 'page',
-                'user_id' => 1,
-                'menu_order' => '0',
-                'created_at' => now(),
-                'updated_at' => now(),
-                
-            ],
-            [
-                'title' => 'Page 2',
-                'slug' => 'page-2',
-                'content' => 'test',
-                'featured_image' => '',
-                'post_status' => 'published',
-                'post_type' => 'page',
-                'user_id' => 1,
-                'menu_order' => '0',
-                'created_at' => now(),
-                'updated_at' => now(),
-                
-            ],
-        ]);
+            ];
+        }
+        $postArr [] = [
+                    'title' => 'Page 1',
+                    'slug' => 'page-1',
+                    'content' => 'test',
+                    'featured_image' => '',
+                    'post_status' => 'published',
+                    'post_type' => 'page',
+                    'user_id' => 1,
+                    'menu_order' => '0',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    
+                ];
+        DB::table('posts')->insert($postArr);
+        
         DB::table('postmetas')->insert([
             [
                 'post_id' => 2,
                 'meta_key' => '__template_id',
-                'meta_value' => 1,
+                'meta_value' => 5001,
                 'created_at' => now(),
                 'updated_at' => now(),
                 

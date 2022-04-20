@@ -27,7 +27,9 @@ use App\Http\Controllers\Admin\{
 
 Route::get('/', function(){
     // echo bcrypt('haris123');
-    echo '<img src="'.__get_user_image('img-623cde3a98177164815621.jpg').'" />';
+    echo request()->route()->parameter('id');
+
+    echo '<img src="'.get_user_image('img-623cde3a98177164815621.jpg').'" />';
 });
 
 Route::fallback(function () {

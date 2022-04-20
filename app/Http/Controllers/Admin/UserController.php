@@ -35,7 +35,7 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required|unique:users',
             'password' => 'required|min:6',
-            'image' => 'required||file|max:1000|mimes:'.__get_image_extensions('string'),
+            'image' => 'required||file|max:1000|mimes:'.get_image_extensions('string'),
         ]);
         
         if ($validated->fails()) {
@@ -60,7 +60,7 @@ class UserController extends Controller
         return $response;
     }
     public function edit($id, Request $req) {
-        if (__c_user()->is_super_admin != 1) {
+        if (c_user()->is_super_admin != 1) {
             if (User::where(['id' => $id])->count() == 0) {
                 $response['errors'] = 'Permission Denied';
                 $response['status'] = 'permissiondenied';
@@ -75,10 +75,10 @@ class UserController extends Controller
             $vArgs = [
                 'name' => 'required',
                 'email' => 'required|unique:users',
-                'image' => 'required||file|max:1000|mimes:'.__get_image_extensions('string'),
+                'image' => 'required||file|max:1000|mimes:'.get_image_extensions('string'),
             ];
             if ($data['_image'] == $user->image)
-                $vArgs['image'] = 'file|max:1000|mimes:'.__get_image_extensions('string');
+                $vArgs['image'] = 'file|max:1000|mimes:'.get_image_extensions('string');
             
             if ($user->email == $data['email']) 
                 $vArgs['email'] = 'required|email';
@@ -127,7 +127,7 @@ class UserController extends Controller
 
     }
     public function delete($id = null, Request $req) {
-        if (__c_user()->is_super_admin != 1) {
+        if (c_user()->is_super_admin != 1) {
             if ($id) {
                 if (User::where(['id' => $id,])->count() == 0) {
                     return back()->with('errormsg', 'Permission Denied');
@@ -163,14 +163,14 @@ class UserController extends Controller
     }
 
     public function restore($id = null, Request $req) {
-        if (__c_user()->is_super_admin != 1) {
+        if (c_user()->is_super_admin != 1) {
             if ($id) {
-                if (User::where(['id' => $id, 'user_id' => __c_user()->id])->count() == 0) {
+                if (User::where(['id' => $id, 'user_id' => c_user()->id])->count() == 0) {
                     return back()->with('errormsg', 'Permission Denied');
                 }
             }
             else {
-                if (User::whereIn('id', $req->input('action_ids'))->where(['user_id' => __c_user()->id])->count() == 0) {
+                if (User::whereIn('id', $req->input('action_ids'))->where(['user_id' => c_user()->id])->count() == 0) {
                     return back()->with('errormsg', 'Permission Denied');
                 }
             }

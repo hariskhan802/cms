@@ -22,7 +22,7 @@
             </div>
             @endif
             <div class="btn-wrap">
-                <a data-toggle="modal" data-target="#add-edit-modal" data-form="{{ route('add-'.__word_format($name)) }}" class="btn btn-primary btn-icon-split  f-action-switcher add-new-record ">
+                <a data-toggle="modal" data-target="#add-edit-modal" data-form="{{ route('add-'.word_format($name)) }}" class="btn btn-primary btn-icon-split  f-action-switcher add-new-record ">
                     <span class="icon text-white-50">
                         <i class="fas fa-plus"></i>
                     </span>
@@ -33,7 +33,7 @@
             <div class="card shadow mb-4">
 
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">{{ __word_format($name, 'cPlural')  }}</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">{{ word_format($name, 'cPlural')  }}</h6>
                 </div>
                 
                 <div class="row c-row">
@@ -47,7 +47,7 @@
                         <div class="search-wrap ">
                             <select class="rec-action" name="rec_action">
                                 <option value="">-----------</option>
-                                <option value="delete" data-form="{{ route('delete-'.__word_format($name)) }}">Delete</option>
+                                <option value="delete" data-form="{{ route('delete-'.word_format($name)) }}">Delete</option>
                             </select>
                             
                         </div>
@@ -109,8 +109,8 @@
                                             <td class="action">
                                                 @if($record->id != 1 && $record->id != 2)
                                                 
-                                                <a href="{{ route('edit-'.__word_format($name), $record->id) }}" class="edit-record"><i class="fa fa-pencil-alt"></i></a>
-                                                <a href="{{ route('delete-'.__word_format($name), $record->id) }}" class="danger-delete">
+                                                <a href="{{ route('edit-'.word_format($name), $record->id) }}" class="edit-record"><i class="fa fa-pencil-alt"></i></a>
+                                                <a href="{{ route('delete-'.word_format($name), $record->id) }}" class="danger-delete">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
                                                 @else
@@ -159,5 +159,5 @@
         </div>
     </div>
 
-    @include('Admin.'.__word_format($name, 'ucfirst').'.add-edit')
+    @include('Admin.'.word_format($name, 'ucfirst').'.add-edit')
 @endsection

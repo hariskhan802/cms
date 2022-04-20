@@ -26,7 +26,7 @@
             <div class="card shadow mb-4">
 
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">{{ __word_format($name, 'cPlural')  }}</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">{{ word_format($name, 'cPlural')  }}</h6>
                 </div>
                 
                 <div class="row c-row">
@@ -35,12 +35,12 @@
 
                         <div class="records-status-wrap">
                             <ul>
-                                <li><a href="{{ route(__word_format($name, 'plural')) }}">All</a></li>
-                                <li><a href="{{ route(__word_format($name, 'plural')).'?status=mine' }}">Mine</a></li>
-                                <li><a href="{{ route(__word_format($name, 'plural')).'?status=approved' }}">Approved</a></li>
-                                <li><a href="{{ route(__word_format($name, 'plural')).'?status=pending' }}">Pending</a></li>
-                                <li><a href="{{ route(__word_format($name, 'plural')).'?status=spam' }}">Spam</a></li>
-                                <li><a href="{{ route(__word_format($name, 'plural')).'?status=trash' }}">Trash</a></li>
+                                <li><a href="{{ route(word_format($name, 'plural')) }}">All</a></li>
+                                <li><a href="{{ route(word_format($name, 'plural')).'?status=mine' }}">Mine</a></li>
+                                <li><a href="{{ route(word_format($name, 'plural')).'?status=approved' }}">Approved</a></li>
+                                <li><a href="{{ route(word_format($name, 'plural')).'?status=pending' }}">Pending</a></li>
+                                <li><a href="{{ route(word_format($name, 'plural')).'?status=spam' }}">Spam</a></li>
+                                <li><a href="{{ route(word_format($name, 'plural')).'?status=trash' }}">Trash</a></li>
                             </ul>
                         </div>
                     </div>
@@ -50,10 +50,10 @@
                             <select class="rec-action" name="rec_action">
                                 <option value="">-----------</option>
                                 @if(\Request::input('status') != 'trash')
-                                <option value="trash" data-form="{{ route('delete-'.__word_format($name)) }}">Trash</option>
+                                <option value="trash" data-form="{{ route('delete-'.word_format($name)) }}">Trash</option>
                                 @elseif(\Request::input('status') == 'trash')
-                                <option value="delete" data-form="{{ route('delete-'.__word_format($name)) }}">Delete</option>
-                                <option value="restore" data-form="{{ route('restore-'.__word_format($name)) }}">Restore</option>
+                                <option value="delete" data-form="{{ route('delete-'.word_format($name)) }}">Delete</option>
+                                <option value="restore" data-form="{{ route('restore-'.word_format($name)) }}">Restore</option>
                                 @endif
                             </select>
                             
@@ -113,13 +113,13 @@
                                             <td>{!! get_admin_panel_dates($record) !!}</td>
                                             <td class="action">
                                                 @if(\Request::input('status') != 'trash')
-                                                <a href="{{ route('edit-'.__word_format($name), $record->id) }}" class="edit-record"><i class="fa fa-pencil-alt"></i></a>
+                                                <a href="{{ route('edit-'.word_format($name), $record->id) }}" class="edit-record"><i class="fa fa-pencil-alt"></i></a>
                                                 @else
-                                                <a href="{{ route('restore-'.__word_format($name), $record->id) }}">
+                                                <a href="{{ route('restore-'.word_format($name), $record->id) }}">
                                                     <i class="fa fa-undo"></i>
                                                 </a>
                                                 @endif
-                                                <a href="{{ route('delete-'.__word_format($name), $record->id) }}" class="{{ \Request::input('status') == 'trash' ? 'danger-delete' : '' }}">
+                                                <a href="{{ route('delete-'.word_format($name), $record->id) }}" class="{{ \Request::input('status') == 'trash' ? 'danger-delete' : '' }}">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
                                             </td>
@@ -163,5 +163,5 @@
         </div>
     </div>
 
-    @include('Admin.'.__word_format($name, 'ucfirst').'.add-edit')
+    @include('Admin.'.word_format($name, 'ucfirst').'.add-edit')
 @endsection

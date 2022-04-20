@@ -9,7 +9,7 @@
             </div>
             <div class="card-body">
                 <div class="form-wrap">
-                    <form method="post" action="{{ get_admin_post_type_url(['name' => 'add-post'], $currentPostType['post_type']) }}">    
+                    <form method="post" action="{{ \Request::route()->getName() == 'edit-post' ? get_admin_post_type_url(['name' => 'edit-post', 'id' => \Request::route()->parameter('id')], $currentPostType['post_type']) : get_admin_post_type_url(['name' => 'add-post'], $currentPostType['post_type'] ) }}">    
                         <div class="form-group">
                             <label>Title</label>
                             <input type="text" class="form-control" placeholder="Title" name="title" required>
@@ -20,14 +20,26 @@
                             <input type="text" class="form-control" placeholder="Slug" name="slug" required>
                             <small class="error-msg"></small>
                         </div>
+                        @if($postType != 'page')
                         <div class="form-group">
                             <label>Category</label>
                             <select name="cats[]"  class="form-control" multiple required>
                                 <option value="">Select Category</option>
-                                {!! __get_parent_child_categories_dropdown('0') !!}
+                                {!! get_parent_child_categories_dropdown('0') !!}
                             </select>
                             <small class="error-msg"></small>
                         </div>
+                        @endif
+                        @if($postType == 'page')
+                        <div class="form-group">
+                            <label>Template</label>
+                            <select name="template_id"  class="form-control" required>
+                                <option value="">Select Template</option>
+                                
+                            </select>
+                            <small class="error-msg"></small>
+                        </div>
+                        @endif
                         <div class="form-group">
                             <label>Content</label>
                             <textarea name="content" class="form-control" id="html-editor" placeholder="Content"></textarea>

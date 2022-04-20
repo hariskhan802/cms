@@ -40,7 +40,7 @@
                                 
                                 @foreach($categories as $category)
                                     <option value="{{$category->id}}">{{$category->title}}</option>
-                                    {!! __get_parent_child_categories_dropdown($category->id) !!}
+                                    {!! get_parent_child_categories_dropdown($category->id) !!}
                                 @endforeach
                             </select>
                             <small class="error-msg"></small>

@@ -35,7 +35,7 @@ class SettingController extends Controller
             }
             foreach ($data as $option_name => $option_value) {
                 if ($option_value != '' ) {
-                    __update_option($option_name, $option_value);
+                    update_option($option_name, $option_value);
                 }
             }
             $response['status'] = 'success';
@@ -46,7 +46,7 @@ class SettingController extends Controller
         else {
             $name = 'general settings';
 
-            return view('Admin.Settings.general-settings', ['name' => $name, 'roles' => __get_roles()]);
+            return view('Admin.Settings.general-settings', ['name' => $name, 'roles' => get_roles()]);
         }
     }
 
@@ -63,7 +63,7 @@ class SettingController extends Controller
         }
         else {
             $name = 'roles settings';
-            return view('Admin.Settings.roles-settings', ['name' => $name, 'roles' => __get_roles()]);
+            return view('Admin.Settings.roles-settings', ['name' => $name, 'roles' => get_roles()]);
         }
     }
 }

@@ -30,7 +30,12 @@ body  #wrapper a {
 
 .records-status-wrap ul li {
     float: left;
-    padding-left: 5px;
+    padding: 0px 3px;
+    font-size: 14px;
+}
+
+.records-status-wrap ul li.active {
+    font-weight: 900;
 }
 
 .c-row .c-column {
@@ -231,6 +236,10 @@ ul.perm-list {
     padding: 5px 0px 5px 25px;
     border-bottom: 1px solid #4c71dd;
 }
+.cus-sub-menu.collapse.show ul li.active {
+    font-weight: 900;
+}
+
 .cus-sub-menu.collapse.show ul li a {
     color: #4b70dd;
     font-size: .85rem;

@@ -22,21 +22,30 @@
             <!-- Divider -->
             <hr class="sidebar-divider">
             @if(count(get_post_types()) > 0)
+                
                 @foreach(get_post_types_object() as $postType)
-                    <li class="nav-item {{ (Route::is('posts') && \Request::get('post_type') == $postType['post_type'] ) ? 'active' : '' }}">
+                    <li class="nav-item {{ ( (Route::is('posts') || Route::is('add-post')  || Route::is('edit-post')) && \Request::get('post_type') == $postType['post_type'] ) ? 'active' : '' }}">
                         <a class="nav-link " href="{{ route('posts').'?post_type='.$postType['post_type'] }}" >
                             <i class="fas fa-fw fa-folder"></i>
                             <span>{{ $postType['name'] }}</span>
                         </a>
-                        <div id="collapsePosts" class="cus-sub-menu collapse {{ (Route::is('posts') && \Request::get('post_type') == $postType['post_type'] ) ? 'show' : '' }}" aria-labelledby="headingPages"
+                        <div id="collapsePosts" class="cus-sub-menu collapse  {{ ( (Route::is('posts') || Route::is('add-post')  || Route::is('edit-post')) && \Request::get('post_type') == $postType['post_type'] ) ? 'show' : '' }} " aria-labelledby="headingPages"
                             data-parent="#accordionSidebar">
                             <ul>
-                                <li>
+                                <li class="{{ (Route::is('posts') && \Request::get('post_type') == $postType['post_type'] ) ? 'active' : '' }}">
                                     <a href="{{ get_admin_post_type_url(['name' => 'posts'], $postType['post_type']) }}">View</a>
                                 </li>
-                                <li>
+                                <li class="{{ (Route::is('add-post') && \Request::get('post_type') == $postType['post_type'] ) ? 'active' : '' }}">
                                     <a href="{{ get_admin_post_type_url(['name' => 'add-post'], $postType['post_type']) }}">Add New</a>
                                 </li>
+                                @php
+                                    var_dump($postType);
+                                @endphp
+                                @foreach($postType['taxonomies'] as $taxKey => $taxonomy)
+                                <li class="{{ (Route::is('add-post') && \Request::get('post_type') == $postType['post_type'] ) ? 'active' : '' }}">
+                                    <a href="{{ get_admin_post_type_url(['name' => 'add-post'], $postType['post_type']) }}">{{-- $taxonomy['name'] --}}</a>
+                                </li>
+                                @endforeach
                             </ul>
                         </div>
                     </li>

@@ -45,7 +45,7 @@ class AuthController extends Controller
     }
 
     public function profile(Request $req) {
-        $user = \App\Models\User::findOrfail(__c_user()->id);
+        $user = \App\Models\User::findOrfail(c_user()->id);
         if ($req->isMethod('post')) {
             $data = $req->all();
             $vArgs = [];
@@ -53,10 +53,10 @@ class AuthController extends Controller
                 $vArgs = [
                     'name' => 'required',
                     'email' => 'required|email|unique:users',
-                    'image' => 'required||file|max:1000|mimes:'.__get_image_extensions('string'),
+                    'image' => 'required||file|max:1000|mimes:'.get_image_extensions('string'),
                 ];
                 if ($data['_image'] == $user->image) 
-                    $vArgs['image'] = 'file|max:1000|mimes:'.__get_image_extensions('string');
+                    $vArgs['image'] = 'file|max:1000|mimes:'.get_image_extensions('string');
                 if ($user->email == $data['email']) 
                     $vArgs['email'] = 'required|email';
             }
@@ -99,7 +99,7 @@ class AuthController extends Controller
                 $img->save($path.'/'.$input['imagename'], 50);
                 $data['image'] = $input['imagename'];
             }
-            if (\App\Models\User::findOrfail(__c_user()->id)->update($data)) {
+            if (\App\Models\User::findOrfail(c_user()->id)->update($data)) {
                 $response['status'] = 'success';
                 $response['message'] = 'You have updated successfully';
             }
