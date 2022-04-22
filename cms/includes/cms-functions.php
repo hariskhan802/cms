@@ -116,10 +116,15 @@
 
     if (!function_exists('register_post_type')) {
 
-        function register_post_type($args = []) {
+        function register_post_type($postType = null, $args = []) {
             global $cmsPostTypes;
-            $cmsPostTypes[] = $args;
-
+            if (!is_string($postType) || $postType == '') {
+                return cms_error('First argument must be entered');
+            }
+            else{
+                $args['post_type'] = $postType;
+                $cmsPostTypes[] = $args;
+            }
         }
 
     }
@@ -128,14 +133,21 @@
 
         function get_post_types_object() {
             global $cmsPostTypes, $cmsTaxonomies;
-            for ($i=0; $i < count($cmsTaxonomies); $i++) { 
-                if(in_array($cmsTaxonomies[$i]['post_type'], array_column($cmsPostTypes, 'post_type'))) {
-                    $cmsPostTypes[$i]['taxonomy'][$cmsTaxonomies[$i]['taxonomy']] =  $cmsTaxonomies[$i];
+            // print_r($cmsPostTypes[1]['post_type']); die;
+            // die;
+            if(is_array($cmsPostTypes)){
+                for ($i=0; $i < count($cmsTaxonomies); $i++) {
+                    // print_r(); die; 
+                    if(in_array(array_value((array_value($cmsPostTypes, $i)), 'post_type'), array_column(array_value($cmsPostTypes, $i), 'post_type'))) {
+                        $cmsPostTypes[$i]['taxonomies'][$cmsTaxonomies[$i]['taxonomy']] =  $cmsTaxonomies[$i];
+                    }
+                    
                 }
-
+                // print_r($cmsPostTypes); die;
+                $menuPosition = array_column($cmsPostTypes, 'menu_position');
+                array_multisort($menuPosition, SORT_ASC, $cmsPostTypes);
             }
-            $menuPosition = array_column($cmsPostTypes, 'menu_position');
-            array_multisort($menuPosition, SORT_ASC, $cmsPostTypes);
+            print_r($cmsPostTypes); die;
             return $cmsPostTypes;
         }
 
@@ -144,7 +156,9 @@
     if (!function_exists('get_post_types')) {
 
         function get_post_types() {
-            return array_column(get_post_types_object(), 'post_type');
+            if(is_array(get_post_types_object())){
+                return array_column(get_post_types_object(), 'post_type');
+            }
         }
 
     }
@@ -168,9 +182,18 @@
 
     if (!function_exists('register_taxonomy')) {
 
-        function register_taxonomy($args = []) {
+        function register_taxonomy($taxonomy = '', $postType = '', $args = []) {
             global $cmsTaxonomies;
-            $cmsTaxonomies[] = $args;
+            if ($taxonomy == '') {
+                return cms_error('First argument must be entered');
+            }
+            else if ($postType == '') {
+                return cms_error('Second argument must be entered');
+            }
+            else {
+                $cmsTaxonomies[] = $args;
+            }
+            // print_r($cmsTaxonomies); die;
             return $cmsTaxonomies;
         }
 

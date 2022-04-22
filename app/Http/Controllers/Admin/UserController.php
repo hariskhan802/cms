@@ -21,7 +21,28 @@ class UserController extends Controller
         if ($req->input('search')) {
             $user2->where('users.name', 'like', "%{$req->input('search')}%")->orWhere('users.email', 'like', "%{$req->input('search')}%");
         }
-        
+        $dom = new DOMDocument;
+    $finder = new \Illuminate\View\FileViewFinder(app()['files'], array(resource_path().'/views'));
+    // // file_get_contents(); die;
+    $endpoint = \Request::url();
+    // var_dump($endpoint); die;
+    $client = new \GuzzleHttp\Client();
+
+    $response = $client->get($endpoint, [
+                    GuzzleHttp\RequestOptions::JSON => ['key1' => 'test'],
+                ]);
+
+    // $statusCode = $response->getStatusCode();
+    var_dump($response);
+    $dom->loadHTML('');
+    $imgs = $dom->getElementsByTagName('img');
+    print_r($imgs); die;
+    foreach ($imgs as $img) {
+            // $img->setAttribute('class', $img->getAttribute('class').' myclass');
+            $img->setAttribute('loading', 'lazy');
+    }
+    $html = $dom->saveHTML();
+    return $html;
         return view('Admin.User.index', ['name' => $name, 'roles' => Role::select(['id', 'role'])->get(), 'totalRecords' => $totalRecords, 'data' => $user2->select(['users.id', 'users.name', 'users.email', 'users.image', 'users.role_id', 'users.is_super_admin', 'users.created_at', 'users.updated_at'])->orderBy('users.id', 'DESC')->paginate(10)]);
     }
     public function index(Request $req) {
