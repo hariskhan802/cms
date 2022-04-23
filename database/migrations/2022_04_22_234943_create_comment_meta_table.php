@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePostmetasTable extends Migration
+class CreateCommentMetaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreatePostmetasTable extends Migration
      */
     public function up()
     {
-        Schema::create('postmetas', function (Blueprint $table) {
+        Schema::create('commentmeta', function (Blueprint $table) {
             $table->bigIncrements('meta_id');
-            $table->unsignedBigInteger('post_id')->nullable();
-            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
-            $table->string('meta_key');
+            $table->unsignedBigInteger('comment_id')->default('0');
+            $table->string('meta_key')->unique();
             $table->longText('meta_value');
             $table->timestamps();
         });
@@ -30,6 +29,6 @@ class CreatePostmetasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('postmetas');
+        Schema::dropIfExists('commentmeta');
     }
 }

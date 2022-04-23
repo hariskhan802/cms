@@ -18,16 +18,13 @@
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
-            @php
-                // print_r(get_post_types()); die;
-            @endphp
+            
             <!-- Divider -->
             <hr class="sidebar-divider">
             @if(is_array(get_post_types_object()))
-                @php
-                    // print_r(get_post_types_object());die;
-                @endphp
+                
                 @foreach(get_post_types_object() as $key => $postType)
+                
                 <li class="nav-item {{ ( (Route::is('posts') || Route::is('add-post')  || Route::is('edit-post')) && \Request::get('post_type') == array_value(get_post_types(), $key) ) ? 'active' : '' }}">
                     <a class="nav-link " href="{{ route('posts').'?post_type='.array_value(get_post_types(), $key) }}" >
                         <i class="fas fa-fw fa-folder"></i>
@@ -45,8 +42,8 @@
                             @if (is_array(array_value($postType, 'taxonomies')))
                                                                 
                                 @foreach(array_value($postType, 'taxonomies') as $taxKey => $taxonomy)
-                                <li class="{{ (Route::is('add-post') && \Request::get('post_type') == array_value(get_post_types(), $key) ) ? 'active' : '' }}">
-                                    <a href="{{ get_admin_post_type_url(['name' => 'add-post'], array_value(get_post_types(), $key)) }}">{{-- $taxonomy['name'] --}}</a>
+                                <li class="{{ (Route::is('terms') && \Request::get('post_type') == array_value(get_post_types(), $key) ) ? 'active' : '' }}">
+                                    <a href="{{ get_admin_taxonomy_url(['name' => 'terms'], $taxKey, array_value(get_post_types(), $key)) }}">{{ array_value($taxonomy, 'name') }}</a>
                                 </li>
                                 @endforeach
                             @endif
@@ -55,15 +52,15 @@
                 </li>
                 @endforeach
             @endif
-            <!-- <li class="nav-item {{ (Route::is('posts') || Route::is('categories')) ? 'active' : '' }}">
+            <!-- <li class="nav-item {{ (Route::is('posts') || Route::is('terms')) ? 'active' : '' }}">
                 <a class="nav-link " href="{{ route('posts') }}" >
                     <i class="fas fa-fw fa-folder"></i>
                     <span>Posts</span>
                 </a>
-                <div id="collapsePosts" class="collapse {{ (Route::is('posts') || Route::is('categories')) ? 'show' : '' }}" aria-labelledby="headingPages"
+                <div id="collapsePosts" class="collapse {{ (Route::is('posts') || Route::is('terms')) ? 'show' : '' }}" aria-labelledby="headingPages"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item {{ Route::is('categories') ? 'active' : '' }}" href="{{ route('categories') }}">Categories</a>
+                        <a class="collapse-item {{ Route::is('terms') ? 'active' : '' }}" href="{{ route('terms') }}">Categories</a>
                         
                     </div>
                 </div>

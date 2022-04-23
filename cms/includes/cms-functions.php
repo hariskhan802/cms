@@ -123,6 +123,7 @@
             }
             else{
                 $args['post_type'] = $postType;
+                $args['taxonomies'] = [];
                 $cmsPostTypes[] = $args;
             }
         }
@@ -138,7 +139,10 @@
             if(is_array($cmsPostTypes)){
                 for ($i=0; $i < count($cmsTaxonomies); $i++) {
                     // print_r(); die; 
-                    if(in_array(array_value((array_value($cmsPostTypes, $i)), 'post_type'), array_column(array_value($cmsPostTypes, $i), 'post_type'))) {
+                    // print_r(array_value((array_value($cmsPostTypes, $i)), 'post_type')); 
+                    // print_r($cmsTaxonomies); 
+                    // die;
+                    if(in_array(array_value((array_value($cmsPostTypes, $i)), 'post_type'), array_column($cmsPostTypes, 'post_type'))) {
                         $cmsPostTypes[$i]['taxonomies'][$cmsTaxonomies[$i]['taxonomy']] =  $cmsTaxonomies[$i];
                     }
                     
@@ -147,7 +151,7 @@
                 $menuPosition = array_column($cmsPostTypes, 'menu_position');
                 array_multisort($menuPosition, SORT_ASC, $cmsPostTypes);
             }
-            print_r($cmsPostTypes); die;
+            // print_r($cmsPostTypes); die;
             return $cmsPostTypes;
         }
 
@@ -191,6 +195,8 @@
                 return cms_error('Second argument must be entered');
             }
             else {
+                $args['taxonomy'] = $taxonomy;
+                $args['post_type'] = $postType;
                 $cmsTaxonomies[] = $args;
             }
             // print_r($cmsTaxonomies); die;

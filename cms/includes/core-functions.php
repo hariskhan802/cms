@@ -1,6 +1,6 @@
 <?php
-    use App\Models\Category;
-    use App\Models\PostCategoryRelation;
+    use App\Models\Term;
+    use App\Models\TermRelationship;
 
     if (!function_exists('data_table')) {
 
@@ -109,15 +109,15 @@
         function get_parent_child_categories_dropdown($id) {
             global $html, $dash;
             if ($id != '') {
-                $category1 = Category::query();
+                $term1 = Term::query();
                 if (\c_user()->user_type != 'admin') {
-                    $category1->where(['user_id' => \c_user()->id]);
+                    $term1->where(['user_id' => \c_user()->id]);
                 }
-                $category1 = $category1->where(['parent_id' => $id])->get();
+                $term1 = $term1->where(['parent_id' => $id])->get();
                 
-                if ($category1->count() > 0) {
+                if ($term1->count() > 0) {
                     $dash .= '-';
-                    foreach($category1 as $cat) {
+                    foreach($term1 as $cat) {
                         $html .= '<option value="'.$cat->id.'"> '.$dash.' '.$cat->title.'</option>';
                         get_parent_child_categories_dropdown($cat->id);
                     }
@@ -135,17 +135,17 @@
             global $html2;
             global $dash2;
             if ($id != '') {
-                $name = 'category';
-                $category1 = Category::query();
+                $name = 'term';
+                $term1 = Term::query();
                 if (\c_user()->user_type != 'admin') {
-                    $category1->where(['user_id' => \c_user()->id]);
+                    $term1->where(['user_id' => \c_user()->id]);
                 }
-                $category1 = $category1->where(['parent_id' => $id])->get();
+                $term1 = $term1->where(['parent_id' => $id])->get();
                 
-                if ($category1->count() > 0) {
+                if ($term1->count() > 0) {
                     $dash2 .= '-';
                     
-                    foreach($category1 as $cat) {
+                    foreach($term1 as $cat) {
                         
                         $html2 .= '<tr>
                                     <td><input type="checkbox" name="action_ids[]" value="'.$cat->id.'"></td>
@@ -177,17 +177,17 @@
     }
     */
 
-    if (!function_exists('category_html')) {
+    if (!function_exists('term_html')) {
 
-        function category_html($cat, $dash2) {
-            $name = 'category';
+        function term_html($cat, $dash2) {
+            $name = 'term';
             return '<tr>
                                     <td><input type="checkbox" name="action_ids[]" value="'.$cat->id.'"></td>
                                     <td>'.$cat->id.'</td>
                                     <td> '.$dash2.' '.$cat->title.'</td>
                                     <td>'.$cat->description.'</td>
                                     <td><img src="'.get_image($cat->featured_image).'" width="50"></td>
-                                    <td>'.$cat->created_at->diffForHumans().'</td>
+                                    <td>'.get_admin_panel_dates($cat).'</td>
                                     <td class="action">
                                         <a href="'.route('edit-'.word_format($name), $cat->id).'" class="edit-record">
                                             <i class="fa fa-pencil-alt"></i>
@@ -207,50 +207,50 @@
             $html = '';
             $dash = '';
             if ($id != '') {
-                $category1 = Category::query();
+                $term1 = Term::query();
                 // if (\c_user()->user_type != 'admin') {
-                //     $category1->where(['user_id' => \c_user()->id]);
+                //     $term1->where(['user_id' => \c_user()->id]);
                 // }
-                $category1 = $category1->where(['parent_id' => $id])->get();
-                if ($category1->count() > 0) {
+                $term1 = $term1->where(['parent_id' => $id])->get();
+                if ($term1->count() > 0) {
                     $dash = '-';
-                    foreach($category1 as $cat) {
+                    foreach($term1 as $cat) {
                         $html .= '<option value="'.$cat->id.'"> '.$dash.' '.$cat->title.'</option>';
-                        $category2 = Category::query();
+                        $term2 = Term::query();
                         // if (\c_user()->user_type != 'admin') {
-                        //     $category2->where(['user_id' => \c_user()->id]);
+                        //     $term2->where(['user_id' => \c_user()->id]);
                         // }
-                        $category2 = $category2->where(['parent_id' => $cat->id])->get();
-                        if ($category2->count() > 0) {
+                        $term2 = $term2->where(['parent_id' => $cat->id])->get();
+                        if ($term2->count() > 0) {
                             $dash = '--';
-                            foreach($category2 as $cat2) {
+                            foreach($term2 as $cat2) {
                                 $html .= '<option value="'.$cat2->id.'"> '.$dash.' '.$cat2->title.'</option>';
-                                $category3 = Category::query();
+                                $term3 = Term::query();
                                 // if (\c_user()->user_type != 'admin') {
-                                //     $category3->where(['user_id' => \c_user()->id]);
+                                //     $term3->where(['user_id' => \c_user()->id]);
                                 // }
-                                $category3 = $category3->where(['parent_id' => $cat2->id])->get();
-                                if ($category3->count() > 0) {
+                                $term3 = $term3->where(['parent_id' => $cat2->id])->get();
+                                if ($term3->count() > 0) {
                                     $dash = '---';
-                                    foreach($category3 as $cat3) {
+                                    foreach($term3 as $cat3) {
                                         $html .= '<option value="'.$cat3->id.'"> '.$dash.' '.$cat3->title.'</option>';
-                                        $category4 = Category::query();
+                                        $term4 = Term::query();
                                         // if (\c_user()->user_type != 'admin') {
-                                        //     $category4->where(['user_id' => \c_user()->id]);
+                                        //     $term4->where(['user_id' => \c_user()->id]);
                                         // }
-                                        $category4 = $category4->where(['parent_id' => $cat3->id])->get();
-                                        if ($category4->count() > 0) {
+                                        $term4 = $term4->where(['parent_id' => $cat3->id])->get();
+                                        if ($term4->count() > 0) {
                                             $dash = '----';
-                                            foreach($category4 as $cat4) {
+                                            foreach($term4 as $cat4) {
                                                 $html .= '<option value="'.$cat4->id.'"> '.$dash.' '.$cat4->title.'</option>';
-                                                $category5 = Category::query();
+                                                $term5 = Term::query();
                                                 // if (\c_user()->user_type != 'admin') {
-                                                //     $category5->where(['user_id' => \c_user()->id]);
+                                                //     $term5->where(['user_id' => \c_user()->id]);
                                                 // }
-                                                $category5 = $category5->where(['parent_id' => $cat4->id])->get();
-                                                if ($category5->count() > 0) {
+                                                $term5 = $term5->where(['parent_id' => $cat4->id])->get();
+                                                if ($term5->count() > 0) {
                                                     $dash = '-----';
-                                                    foreach($category5 as $cat5) {
+                                                    foreach($term5 as $cat5) {
                                                         $html .= '<option value="'.$cat5->id.'"> '.$dash.' '.$cat5->title.'</option>';
                                                     }
                                                 }
@@ -277,67 +277,67 @@
             $html2 = '';
             $dash2 = '';
             if ($id != '') {
-                $name = 'category';
-                $category1 = Category::query();
+                $name = 'term';
+                $term1 = Term::query();
                 if (\c_user()->user_type != 'admin') {
-                    $category1->where(['user_id' => \c_user()->id]);
+                    $term1->where(['user_id' => \c_user()->id]);
                 }
-                $category1 = $category1->where(['parent_id' => $id])->get();
+                $term1 = $term1->where(['parent_id' => $id])->get();
                 
-                if ($category1->count() > 0) {
+                if ($term1->count() > 0) {
                     $dash2 = '-';
                     
-                    foreach($category1 as $cat) {
+                    foreach($term1 as $cat) {
                         
-                        $html2 .= category_html($cat, $dash2);
-                        $category2 = Category::query();
+                        $html2 .= term_html($cat, $dash2);
+                        $term2 = Term::query();
                         if (\c_user()->user_type != 'admin') {
-                            $category2->where(['user_id' => \c_user()->id]);
+                            $term2->where(['user_id' => \c_user()->id]);
                         }
-                        $category2 = $category2->where(['parent_id' => $cat->id])->get();
+                        $term2 = $term2->where(['parent_id' => $cat->id])->get();
                             
-                        if ($category2->count() > 0) {
+                        if ($term2->count() > 0) {
                             $dash2 = '--';
                             
-                            foreach($category2 as $cat2) {
+                            foreach($term2 as $cat2) {
                                 
-                                $html2 .= category_html($cat2, $dash2);
+                                $html2 .= term_html($cat2, $dash2);
 
-                                $category3 = Category::query();
+                                $term3 = Term::query();
                                 if (\c_user()->user_type != 'admin') {
-                                    $category3->where(['user_id' => \c_user()->id]);
+                                    $term3->where(['user_id' => \c_user()->id]);
                                 }
-                                $category3 = $category3->where(['parent_id' => $cat2->id])->get();
-                                // var_dump($category3->count()); die;
-                                if ($category3->count() > 0) {
+                                $term3 = $term3->where(['parent_id' => $cat2->id])->get();
+                                // var_dump($term3->count()); die;
+                                if ($term3->count() > 0) {
                                     $dash2 = '---';
-                                    // dd($category3->toArray());
-                                    foreach($category3 as $cat3) {
+                                    // dd($term3->toArray());
+                                    foreach($term3 as $cat3) {
                                         
-                                        $html2 .= category_html($cat3, $dash2);
+                                        $html2 .= term_html($cat3, $dash2);
 
-                                        $category4 = Category::query();
+                                        $term4 = Term::query();
                                         if (\c_user()->user_type != 'admin') {
-                                            $category4->where(['user_id' => \c_user()->id]);
+                                            $term4->where(['user_id' => \c_user()->id]);
                                         }
-                                        $category4 = $category4->where(['parent_id' => $cat3->id])->get();
-                                        // var_dump($category4->count()); die;
-                                        if ($category4->count() > 0) {
+                                        $term4 = $term4->where(['parent_id' => $cat3->id])->get();
+                                        // var_dump($term4->count()); die;
+                                        if ($term4->count() > 0) {
                                             $dash2 .= '-';
                                             
-                                            foreach($category4 as $cat4) {
-                                                $html2 .= category_html($cat4, $dash2);
-                                                $category5 = Category::query();
+                                            foreach($term4 as $cat4) {
+                                                $html2 .= term_html($cat4, $dash2);
+                                                $term5 = Term::query();
                                                 if (\c_user()->user_type != 'admin') {
-                                                    $category5->where(['user_id' => \c_user()->id]);
+                                                    $term5->where(['user_id' => \c_user()->id]);
                                                 }
-                                                $category5 = $category5->where(['parent_id' => $cat4->id])->get();
-                                                // var_dump($category5->count()); die;
-                                                if ($category5->count() > 0) {
+                                                $term5 = $term5->where(['parent_id' => $cat4->id])->get();
+                                                // var_dump($term5->count()); die;
+                                                if ($term5->count() > 0) {
                                                     $dash2 .= '-';
                                                     
-                                                    foreach($category5 as $cat5) {
-                                                        $html2 .= category_html($cat5, $dash2);
+                                                    foreach($term5 as $cat5) {
+                                                        $html2 .= term_html($cat5, $dash2);
                                                     }
                                                 }
                                                 
@@ -359,11 +359,11 @@
 
     
 
-    if (!function_exists('get_category_string_format')) {
+    if (!function_exists('get_term_string_format')) {
 
-        function get_category_string_format($id) {
+        function get_term_string_format($id) {
             
-            return array_column(Category::select(['title'])
+            return array_column(Term::select(['title'])
             ->whereIn(
                 'id', PostCategoryRelation::select(['cat_id'])->where(['post_id' => $id])->get()->pluck('cat_id')
             )->get()->toArray(), 'title');
@@ -484,13 +484,35 @@
     
     if (!function_exists('get_admin_post_type_url')) {
 
-        function get_admin_post_type_url($routeParams, $post_type) {
+        function get_admin_post_type_url($routeParams, $postType) {
             $route = null;
             if (array_value($routeParams, 'name') != null && array_value($routeParams, 'id') != null) {
-                $route = route(array_value($routeParams, 'name'), array_value($routeParams, 'id')).'?post_type='.$post_type;
+                $route = route(array_value($routeParams, 'name'), array_value($routeParams, 'id')).'?post_type='.$postType;
             }
             elseif(array_value($routeParams, 'name') != null) {
-                $route = route(array_value($routeParams, 'name')).'?post_type='.$post_type;
+                $route = route(array_value($routeParams, 'name')).'?post_type='.$postType;
+            }
+            return $route;
+        }
+
+    }
+    
+    if (!function_exists('get_admin_taxonomy_url')) {
+
+        function get_admin_taxonomy_url($routeParams, $taxonomy = '', $postType = '') {
+            $route = null;
+            
+            if($taxonomy == '') {
+                return cms_error('Second argument must be entered');
+            }
+            elseif($postType == '') {
+                return cms_error('Third argument must be entered');
+            }
+            elseif (array_value($routeParams, 'name') != null && array_value($routeParams, 'id') != null) {
+                $route = route(array_value($routeParams, 'name'), array_value($routeParams, 'id')).'?taxonomy='.$taxonomy.'&post_type='.$postType;
+            }
+            elseif(array_value($routeParams, 'name') != null) {
+                $route = route(array_value($routeParams, 'name')).'?taxonomy='.$taxonomy.'&post_type='.$postType;
             }
             return $route;
         }

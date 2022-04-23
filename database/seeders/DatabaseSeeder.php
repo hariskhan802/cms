@@ -46,86 +46,17 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
                 
             ]);
-        $cats = [[
-                        'title' => 'Women',
-                        'slug' => 'women',
-                        'featured_image' => 'img-623ce68f571eb1648158351.jpg',
-                        'description' => '',
-                        'parent_id' => 0,
-                        'user_id' => 1,
-                        'status' => 'published',
-                        'menu_order' => 0,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ],[
-                        'title' => 'Women`s Fashion',
-                        'slug' => 'womens-fashion',
-                        'featured_image' => 'img-623ce6a36746b1648158371.png',
-                        'description' => '',
-                        'parent_id' => 1,
-                        'user_id' => 1,
-                        'status' => 'published',
-                        'menu_order' => 0,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ],[
-                        'title' => 'Pants',
-                        'slug' => 'pants',
-                        'featured_image' => 'img-623ce6b81b6861648158392.png',
-                        'description' => '',
-                        'parent_id' => 2,
-                        'user_id' => 1,
-                        'status' => 'published',
-                        'menu_order' => 0,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ],[
-                        'title' => 'Shirts',
-                        'slug' => 'shirts',
-                        'featured_image' => 'img-623cebd33e6911648159699.png',
-                        'description' => '',
-                        'parent_id' => 2,
-                        'user_id' => 1,
-                        'status' => 'published',
-                        'menu_order' => 0,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ],[
-                        'title' => 'Jeans Pants',
-                        'slug' => 'jeans-pants',
-                        'featured_image' => 'img-623cf360946d71648161632.png',
-                        'description' => '',
-                        'parent_id' => 3,
-                        'user_id' => 1,
-                        'status' => 'published',
-                        'menu_order' => 0,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ],[
-                        'title' => 'T shirts',
-                        'slug' => 't-shirts',
-                        'featured_image' => 'img-623e0efba56451648234235.png',
-                        'description' => '',
-                        'parent_id' => 4,
-                        'user_id' => 1,
-                        'status' => 'published',
-                        'menu_order' => 0,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ],[
-                        'title' => 'Dress Pants',
-                        'slug' => 'dress-pants',
-                        'featured_image' => 'img-623e0f3231b8c1648234290.png',
-                        'description' => '',
-                        'parent_id' => 3,
-                        'user_id' => 1,
-                        'status' => 'published',
-                        'menu_order' => 0,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]];
-        DB::table('categories')->insert($cats);
-
+        
+        $termID = DB::table('terms')->insertGetId([
+            'name' => 'Women',
+            'slug' => 'women',
+        ]);
+        DB::table('term_taxonomy')->insert([
+            'term_id' => $termID,
+            'taxonomy' => 'category',
+            'description' => '',
+        
+        ]);
         // DB::table('posts')->insert([
         //     [
         //         'title' => 'Post 1',
@@ -184,10 +115,10 @@ class DatabaseSeeder extends Seeder
         for ($i=1; $i <= 5000; $i++) { 
             # code...
             $postArr [] = [
-                'title' => 'Post '.$i,
-                'slug' => 'post-'.$i,
-                'content' => 'test',
-                'featured_image' => '',
+                'post_title' => 'Post '.$i,
+                'post_name' => 'post-'.$i,
+                'post_content' => 'test',
+                'post_content_filtered' => '',
                 'post_status' => 'published',
                 'post_type' => 'post',
                 'user_id' => 1,

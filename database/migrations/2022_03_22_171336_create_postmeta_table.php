@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePostCategoryRelationsTable extends Migration
+class CreatePostmetaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreatePostCategoryRelationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('post_category_relations', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('post_id')->nullable();
+        Schema::create('postmeta', function (Blueprint $table) {
+            $table->bigIncrements('meta_id');
+            $table->unsignedBigInteger('post_id')->default('0');
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
-            $table->unsignedBigInteger('cat_id')->nullable();
-            $table->foreign('cat_id')->references('id')->on('categories')->onDelete('set null');
+            $table->string('meta_key')->unique();
+            $table->longText('meta_value');
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreatePostCategoryRelationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('post_category_relations');
+        Schema::dropIfExists('postmeta');
     }
 }

@@ -5,7 +5,7 @@ use App\Http\Controllers\Admin\{
     AuthController,
     DashboardController,
     PostController,
-    CategoryController,
+    TermController,
     PageController,
     CommentController,
     UserController,
@@ -23,6 +23,17 @@ use App\Http\Controllers\Admin\{
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+
+Route::get('/test321', function(){
+    $cats = [
+        'name' => 'Women',
+        'slug' => 'women',
+        
+    ];
+    var_dump(DB::table('terms')->insertGetId($cats)); die;
+
+});
 
 
 Route::get('/', function(){
@@ -57,11 +68,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['AdminCheck']], function() {
         /restore/{id?}', [PostController::class, 'restore'])->name('restore-post');
 
 
-    // Category Routes
-    Route::get('categories', [CategoryController::class, 'index'])->name('categories');
-    Route::post('category/add', [CategoryController::class, 'add'])->name('add-category');
-    Route::match(['get', 'post'], 'category/edit/{id}', [CategoryController::class, 'edit'])->name('edit-category');
-    Route::match(['get', 'post'], 'category/delete/{id?}', [CategoryController::class, 'delete'])->name('delete-category');
+    // Terms Routes
+    Route::get('terms', [TermController::class, 'index'])->name('terms');
+    Route::post('term/add', [TermController::class, 'add'])->name('add-term');
+    Route::match(['get', 'post'], 'term/edit/{id}', [TermController::class, 'edit'])->name('edit-term');
+    Route::match(['get', 'post'], 'term/delete/{id?}', [TermController::class, 'delete'])->name('delete-term');
 
 
     // Page Routes

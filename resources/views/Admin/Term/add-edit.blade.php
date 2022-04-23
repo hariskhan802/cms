@@ -38,9 +38,9 @@
                             <select name="parent_id"  class="form-control" required>
                                 <option value="0">Parent Category</option>
                                 
-                                @foreach($categories as $category)
-                                    <option value="{{$category->id}}">{{$category->title}}</option>
-                                    {!! get_parent_child_categories_dropdown($category->id) !!}
+                                @foreach($terms as $term)
+                                    <option value="{{$term->id}}">{{$term->title}}</option>
+                                    {!! get_parent_child_categories_dropdown($term->id) !!}
                                 @endforeach
                             </select>
                             <small class="error-msg"></small>
