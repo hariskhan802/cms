@@ -18,21 +18,21 @@ class TermController extends Controller
         $name = 'term';
         $totalRecords = $term1->count();
         if ($req->input('search')) {
-            $term2->where('terms.title', 'like', "%{$req->input('search')}%");
+            $term2->where('terms.name', 'like', "%{$req->input('search')}%");
         }
         if (c_user()->is_super_admin != 1) {
-            $term2->where('terms.user_id', '=', c_user()->id);
-            $term3->where('terms.user_id', '=', c_user()->id);
+            $term2->where('terms.user_id', '=', c_user()->ID);
+            $term3->where('terms.user_id', '=', c_user()->ID);
         }
-        if ($req->input('status') == '') {
-            $term2->where(['status' => 'published']);
-        }
-        if ($req->input('search') == '') {
-            $term2->where(['parent_id' => '0']);
-        }
-        $term3->where(['parent_id' => '0']);
+        // if ($req->input('status') == '') {
+        //     $term2->where(['status' => 'published']);
+        // }
+        // if ($req->input('search') == '') {
+        //     $term2->where(['parent_id' => '0']);
+        // }
+        // $term3->where(['parent_id' => '0']);
         // $term2 = ;
-        return view('Admin.Term.index', ['name' => $name, 'totalRecords' => $totalRecords, 'data' => $term2->select(['terms.id', 'terms.title', 'terms.description', 'terms.featured_image', 'terms.created_at', 'terms.updated_at'])->orderBy('terms.id', 'DESC')->paginate(10), 'terms' => $term3->orderBy('terms.id', 'DESC')->get()]);
+        return view('Admin.Term.index', ['name' => $name, 'totalRecords' => $totalRecords, 'data' => $term2->select(['terms.term_id', 'terms.name',  'terms.slug'])->leftJoin('term_taxonomy', 'term_taxonomy.term_id', '=', 'terms.term_id')->orderBy('terms.term_id', 'DESC')->paginate(10), 'terms' => $term3->orderBy('terms.term_id', 'DESC')->get()]);
     }
 
     public function index(Request $req) {
@@ -47,7 +47,7 @@ class TermController extends Controller
             'description' => 'required',
             'featured_image' => 'required||file|max:1000|mimes:'.get_image_extensions('string'),
         ]);
-        $data['user_id'] = c_user()->id;
+        $data['user_id'] = c_user()->ID;
         if ($data['_status'] == 'Publish') {
             $data['status'] = 'published';
         }
@@ -75,7 +75,7 @@ class TermController extends Controller
     }
     public function edit($id, Request $req) {
         if (c_user()->is_super_admin != 1) {
-            if (Term::where(['id' => $id, 'user_id' => c_user()->id])->count() == 0) {
+            if (Term::where(['id' => $id, 'user_id' => c_user()->ID])->count() == 0) {
                 $response['errors'] = 'Permission Denied';
                 $response['status'] = 'permissiondenied';
                 return response()->json($response ,403);
@@ -143,12 +143,12 @@ class TermController extends Controller
     public function delete($id = null, Request $req) {
         if (c_user()->is_super_admin != 1) {
             if ($id) {
-                if (Term::where(['id' => $id, 'user_id' => c_user()->id])->count() == 0) {
+                if (Term::where(['id' => $id, 'user_id' => c_user()->ID])->count() == 0) {
                     return back()->with('errormsg', 'Permission Denied');
                 }
             }
             else {
-                if (Term::whereIn('id', $req->input('action_ids'))->where(['user_id' => c_user()->id])->count() == 0) {
+                if (Term::whereIn('id', $req->input('action_ids'))->where(['user_id' => c_user()->ID])->count() == 0) {
                     return back()->with('errormsg', 'Permission Denied');
                 }
             }

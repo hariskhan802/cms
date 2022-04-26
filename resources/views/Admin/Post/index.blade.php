@@ -34,7 +34,7 @@
             <div class="card shadow mb-4">
 
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">{{ $currentPostType['name']  }}</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">{{ array_value(array_value($currentPostType, 'labels'), 'name')  }}</h6>
                 </div>
                 
                 <div class="row c-row">
@@ -44,8 +44,8 @@
                         <div class="records-status-wrap">
                             <ul>
                                 <li class=" {{ \Request::input('status') == '' ? 'active' : '' }} "><a href="{{ get_admin_post_type_url(['name' => 'posts'], $postType) }}">All</a></li>
-                                <li class=" {{ \Request::input('status') == 'published' ? 'active' : '' }} "><a href="{{ get_admin_post_type_url(['name' => 'posts'], $postType).'&status=published' }}">Published</a></li>
-                                <li class=" {{ \Request::input('status') == 'drafts' ? 'active' : '' }} "><a href="{{ get_admin_post_type_url(['name' => 'posts'], $postType).'&status=drafts' }}">Drafts</a></li>
+                                <li class=" {{ \Request::input('status') == 'publish' ? 'active' : '' }} "><a href="{{ get_admin_post_type_url(['name' => 'posts'], $postType).'&status=publish' }}">Published</a></li>
+                                <li class=" {{ \Request::input('status') == 'draft' ? 'active' : '' }} "><a href="{{ get_admin_post_type_url(['name' => 'posts'], $postType).'&status=draft' }}">Drafts</a></li>
                                 <li class=" {{ \Request::input('status') == 'trash' ? 'active' : '' }} "><a href="{{ get_admin_post_type_url(['name' => 'posts'], $postType).'&status=trash' }}">Trash</a></li>
                             </ul>
                         </div>
@@ -89,7 +89,7 @@
                                     <th><input type="checkbox"  class="all-checked"></th>
                                     <th>ID</th>
                                     <th>Title</th>
-                                    <th>Slug</th>
+                                    <th>Author</th>
                                     @if($postType != 'page')
                                     <th>Category</th>
                                     @endif
@@ -103,24 +103,24 @@
                                     
                                     @foreach($data as $record)
                                         <tr>
-                                            <td><input type="checkbox" name="action_ids[]" value="{{ $record->id }}"></td>
-                                            <td>{{ $record->id }}</td>
-                                            <td>{{ $record->title }}</td>
-                                            <td>{{ $record->slug }}</td>
+                                            <td><input type="checkbox" name="action_ids[]" value="{{ $record->ID }}"></td>
+                                            <td>{{ $record->ID }}</td>
+                                            <td>{{ $record->post_title }}</td>
+                                            <td>{{ $record->display_name }}</td>
                                             @if($postType != 'page')
-                                            <td><p>{!! implode("<br> ", get_category_string_format($record->id)) !!}</p></td>
+                                            <td><p>{!! implode("<br> ", get_term_string_format($record->ID)) !!}</p></td>
                                             @endif
-                                            <td><img src="{{ get_image($record->featured_image) }}" width="50"></td>
-                                            <td>{!! get_admin_panel_dates($record) !!}</td>
+                                            <td><img src="{{ get_image(get_post_meta($record->ID, '__featured_image', true)) }}" width="50"></td>
+                                            <td>{!! get_admin_panel_post_type_dates($record) !!}</td>
                                             <td class="action">
                                                 @if(\Request::input('status') != 'trash')
-                                                <a href="{{ get_admin_post_type_url(['name' => 'edit-post', 'id' => $record->id], $postType) }}" class="edit-record"><i class="fa fa-pencil-alt"></i></a>
+                                                <a href="{{ get_admin_post_type_url(['name' => 'edit-post', 'id' => $record->ID], $postType) }}" class="edit-record"><i class="fa fa-pencil-alt"></i></a>
                                                 @else
-                                                <a href="{{ get_admin_post_type_url(['name' => 'restore-post', 'id' => $record->id], $postType) }}">
+                                                <a href="{{ get_admin_post_type_url(['name' => 'restore-post', 'id' => $record->ID], $postType) }}">
                                                     <i class="fa fa-undo"></i>
                                                 </a>
                                                 @endif
-                                                <a href="{{ get_admin_post_type_url(['name' => 'delete-post', 'id' => $record->id], $postType) }}" class="{{ \Request::input('status') == 'trash' ? 'danger-delete' : '' }}">
+                                                <a href="{{ get_admin_post_type_url(['name' => 'delete-post', 'id' => $record->ID], $postType) }}" class="{{ \Request::input('status') == 'trash' ? 'danger-delete' : '' }}">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
                                             </td>

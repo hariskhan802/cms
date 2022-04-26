@@ -29,7 +29,7 @@ class RoleController extends Controller
         $validated = Validator::make($data, [
             'role' => 'required|min:2',
         ]);
-        $data['user_id'] = c_user()->id;
+        $data['user_id'] = c_user()->ID;
         $data['post_status'] = 'drafted';
         if ($data['_status'] == 'Publish') {
             $data['post_status'] = 'published';

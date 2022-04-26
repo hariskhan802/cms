@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class TermRelationship extends Model
 {
     use HasFactory;
+    public $timestamps = false;
     protected $guarded = ['id'];
 
     // public function getCreatedAtAttribute($date)

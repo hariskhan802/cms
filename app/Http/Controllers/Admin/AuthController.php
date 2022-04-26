@@ -24,6 +24,7 @@ class AuthController extends Controller
             if ($validated->fails()) {
                 return back()->withErrors($validated)->withInput();
             }
+            
             if (Auth::attempt(['email' => $data['email'], 'password' =>  $data['password']], $req->input('rememberme'))) {
                 if ($req->query('redirect')){
                     return redirect($request->query('redirect'));
@@ -45,7 +46,7 @@ class AuthController extends Controller
     }
 
     public function profile(Request $req) {
-        $user = \App\Models\User::findOrfail(c_user()->id);
+        $user = \App\Models\User::findOrfail(c_user()->ID);
         if ($req->isMethod('post')) {
             $data = $req->all();
             $vArgs = [];
@@ -99,7 +100,7 @@ class AuthController extends Controller
                 $img->save($path.'/'.$input['imagename'], 50);
                 $data['image'] = $input['imagename'];
             }
-            if (\App\Models\User::findOrfail(c_user()->id)->update($data)) {
+            if (\App\Models\User::findOrfail(c_user()->ID)->update($data)) {
                 $response['status'] = 'success';
                 $response['message'] = 'You have updated successfully';
             }

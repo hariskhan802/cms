@@ -21,10 +21,10 @@ class CommentController extends Controller
             $comment2->where('comments.status', '!=', 'trashed');
         }
         if (c_user()->is_super_admin != 1) {
-            $comment2->where('comments.user_id', '=', c_user()->id);
+            $comment2->where('comments.user_id', '=', c_user()->ID);
         }
         if ($req->input('status') == 'mine') {
-            $comment2->where(['comments.user_id' => c_user()->id]);
+            $comment2->where(['comments.user_id' => c_user()->ID]);
         }
         if ($req->input('status') == 'approved') {
             $comment2->where(['comments.status' => 'approved']);
@@ -55,7 +55,7 @@ class CommentController extends Controller
             'content' => 'required',
             'featured_image' => 'required||file|max:1000|mimes:'.get_image_extensions('string'),
         ]);
-        $data['user_id'] = c_user()->id;
+        $data['user_id'] = c_user()->ID;
 
         
         if ($validated->fails()) {
@@ -85,7 +85,7 @@ class CommentController extends Controller
     }
     public function edit($id, Request $req) {
         if (c_user()->is_super_admin != 1) {
-            if (Comment::where(['id' => $id, 'user_id' => c_user()->id])->count() == 0) {
+            if (Comment::where(['id' => $id, 'user_id' => c_user()->ID])->count() == 0) {
                 $response['errors'] = 'Permission Denied';
                 $response['status'] = 'permissiondenied';
                 return response()->json($response ,403);
@@ -130,12 +130,12 @@ class CommentController extends Controller
     public function delete($id = null, Request $req) {
         if (c_user()->is_super_admin != 1) {
             if ($id) {
-                if (Comment::where(['id' => $id, 'user_id' => c_user()->id])->count() == 0) {
+                if (Comment::where(['id' => $id, 'user_id' => c_user()->ID])->count() == 0) {
                     return back()->with('errormsg', 'Permission Denied');
                 }
             }
             else {
-                if (Comment::whereIn('id', $req->input('action_ids'))->where(['user_id' => c_user()->id])->count() == 0) {
+                if (Comment::whereIn('id', $req->input('action_ids'))->where(['user_id' => c_user()->ID])->count() == 0) {
                     return back()->with('errormsg', 'Permission Denied');
                 }
             }
@@ -174,12 +174,12 @@ class CommentController extends Controller
     public function restore($id = null, Request $req) {
         if (c_user()->is_super_admin != 1) {
             if ($id) {
-                if (Comment::where(['id' => $id, 'user_id' => c_user()->id])->count() == 0) {
+                if (Comment::where(['id' => $id, 'user_id' => c_user()->ID])->count() == 0) {
                     return back()->with('errormsg', 'Permission Denied');
                 }
             }
             else {
-                if (Comment::whereIn('id', $req->input('action_ids'))->where(['user_id' => c_user()->id])->count() == 0) {
+                if (Comment::whereIn('id', $req->input('action_ids'))->where(['user_id' => c_user()->ID])->count() == 0) {
                     return back()->with('errormsg', 'Permission Denied');
                 }
             }

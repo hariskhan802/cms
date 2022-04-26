@@ -3,28 +3,42 @@
 	
 	function add_default_post_type() {
 		register_post_type('post', [
-                'name' => 'Posts',
-                'singular_name' => 'Post',
+                
+                'labels' => [
+                    'name' => ___( 'Posts' ),
+                    'singular_name' => ___( 'Post' )
+                ],
                 'public' => true,
                 'menu_position' => 5,
-                'slug' => '',
+                'has_archive' => true,
+                'rewrite' => ['slug' => 'movies'],
+                'show_in_rest' => true,
             ]
         );
         register_post_type('page', [
-                'name' => 'Pages',
-                'singular_name' => 'Page',
+                'labels' => [
+                    'name' => ___( 'Pages' ),
+                    'singular_name' => ___( 'Page' )
+                ],
                 'public' => true,
                 'menu_position' => 10,
-                'slug' => '',
-            ]
+                'has_archive' => true,
+                'rewrite' => ['slug' => 'movies'],
+                'show_in_rest' => true,
+                ]
         );
 
-        register_taxonomy('category', 'post', [
-                'name' => 'Categories',
-                'singular_name' => 'Category',
-                'public' => true,
-                'menu_position' => 5,
-                'slug' => 'category',
+        register_taxonomy('category', ['post'], [
+                'labels' => [
+                    'name' => ___( 'Categories' ),
+                    'singular_name' => ___( 'Category' )
+                ],
+                'hierarchical' => true,
+                'show_ui' => true,
+                'show_in_rest' => true,
+                'show_admin_column' => true,
+                'query_var' => true,
+                'rewrite' => [ 'slug' => 'category' ]
             ]
         );
 	}

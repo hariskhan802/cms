@@ -111,7 +111,7 @@
             if ($id != '') {
                 $term1 = Term::query();
                 if (\c_user()->user_type != 'admin') {
-                    $term1->where(['user_id' => \c_user()->id]);
+                    $term1->where(['user_id' => \c_user()->ID]);
                 }
                 $term1 = $term1->where(['parent_id' => $id])->get();
                 
@@ -138,7 +138,7 @@
                 $name = 'term';
                 $term1 = Term::query();
                 if (\c_user()->user_type != 'admin') {
-                    $term1->where(['user_id' => \c_user()->id]);
+                    $term1->where(['user_id' => \c_user()->ID]);
                 }
                 $term1 = $term1->where(['parent_id' => $id])->get();
                 
@@ -208,50 +208,40 @@
             $dash = '';
             if ($id != '') {
                 $term1 = Term::query();
-                // if (\c_user()->user_type != 'admin') {
-                //     $term1->where(['user_id' => \c_user()->id]);
-                // }
-                $term1 = $term1->where(['parent_id' => $id])->get();
+                $term1->leftJoin('term_taxonomy', 'term_taxonomy.term_id', '=', 'terms.term_id')->get();
+                $term1 = $term1->where(['term_taxonomy.parent' => $id])->get();
                 if ($term1->count() > 0) {
                     $dash = '-';
                     foreach($term1 as $cat) {
-                        $html .= '<option value="'.$cat->id.'"> '.$dash.' '.$cat->title.'</option>';
+                        $html .= '<option value="'.$cat->term_id.'"> '.$dash.' '.$cat->name.'</option>';
                         $term2 = Term::query();
-                        // if (\c_user()->user_type != 'admin') {
-                        //     $term2->where(['user_id' => \c_user()->id]);
-                        // }
-                        $term2 = $term2->where(['parent_id' => $cat->id])->get();
+                        $term2->leftJoin('term_taxonomy', 'term_taxonomy.term_id', '=', 'terms.term_id')->get();
+                        $term2 = $term2->where(['term_taxonomy.parent' => $cat->term_id])->get();
                         if ($term2->count() > 0) {
                             $dash = '--';
                             foreach($term2 as $cat2) {
-                                $html .= '<option value="'.$cat2->id.'"> '.$dash.' '.$cat2->title.'</option>';
+                                $html .= '<option value="'.$cat2->term_id.'"> '.$dash.' '.$cat2->name.'</option>';
                                 $term3 = Term::query();
-                                // if (\c_user()->user_type != 'admin') {
-                                //     $term3->where(['user_id' => \c_user()->id]);
-                                // }
-                                $term3 = $term3->where(['parent_id' => $cat2->id])->get();
+                                $term3->leftJoin('term_taxonomy', 'term_taxonomy.term_id', '=', 'terms.term_id')->get();
+                                $term3 = $term3->where(['term_taxonomy.parent' => $cat2->term_id])->get();
                                 if ($term3->count() > 0) {
                                     $dash = '---';
                                     foreach($term3 as $cat3) {
-                                        $html .= '<option value="'.$cat3->id.'"> '.$dash.' '.$cat3->title.'</option>';
+                                        $html .= '<option value="'.$cat3->term_id.'"> '.$dash.' '.$cat3->name.'</option>';
                                         $term4 = Term::query();
-                                        // if (\c_user()->user_type != 'admin') {
-                                        //     $term4->where(['user_id' => \c_user()->id]);
-                                        // }
-                                        $term4 = $term4->where(['parent_id' => $cat3->id])->get();
+                                        $term4->leftJoin('term_taxonomy', 'term_taxonomy.term_id', '=', 'terms.term_id')->get();
+                                        $term4 = $term4->where(['term_taxonomy.parent' => $cat3->term_id])->get();
                                         if ($term4->count() > 0) {
                                             $dash = '----';
                                             foreach($term4 as $cat4) {
-                                                $html .= '<option value="'.$cat4->id.'"> '.$dash.' '.$cat4->title.'</option>';
+                                                $html .= '<option value="'.$cat4->term_id.'"> '.$dash.' '.$cat4->name.'</option>';
                                                 $term5 = Term::query();
-                                                // if (\c_user()->user_type != 'admin') {
-                                                //     $term5->where(['user_id' => \c_user()->id]);
-                                                // }
-                                                $term5 = $term5->where(['parent_id' => $cat4->id])->get();
+                                                $term5->leftJoin('term_taxonomy', 'term_taxonomy.term_id', '=', 'terms.term_id')->get();
+                                                $term5 = $term5->where(['term_taxonomy.parent' => $cat4->term_id])->get();
                                                 if ($term5->count() > 0) {
                                                     $dash = '-----';
                                                     foreach($term5 as $cat5) {
-                                                        $html .= '<option value="'.$cat5->id.'"> '.$dash.' '.$cat5->title.'</option>';
+                                                        $html .= '<option value="'.$cat5->term_id.'"> '.$dash.' '.$cat5->name.'</option>';
                                                     }
                                                 }
                                             }
@@ -279,10 +269,8 @@
             if ($id != '') {
                 $name = 'term';
                 $term1 = Term::query();
-                if (\c_user()->user_type != 'admin') {
-                    $term1->where(['user_id' => \c_user()->id]);
-                }
-                $term1 = $term1->where(['parent_id' => $id])->get();
+                $term1->leftJoin('term_taxonomy', 'term_taxonomy.term_id', '=', 'terms.term_id');
+                $term1 = $term1->where(['term_taxonomy.parent' => $id])->get();
                 
                 if ($term1->count() > 0) {
                     $dash2 = '-';
@@ -291,10 +279,8 @@
                         
                         $html2 .= term_html($cat, $dash2);
                         $term2 = Term::query();
-                        if (\c_user()->user_type != 'admin') {
-                            $term2->where(['user_id' => \c_user()->id]);
-                        }
-                        $term2 = $term2->where(['parent_id' => $cat->id])->get();
+                        $term2->leftJoin('term_taxonomy', 'term_taxonomy.term_id', '=', 'terms.term_id');
+                        $term2 = $term2->where(['term_taxonomy.parent' => $cat->term_id])->get();
                             
                         if ($term2->count() > 0) {
                             $dash2 = '--';
@@ -304,10 +290,8 @@
                                 $html2 .= term_html($cat2, $dash2);
 
                                 $term3 = Term::query();
-                                if (\c_user()->user_type != 'admin') {
-                                    $term3->where(['user_id' => \c_user()->id]);
-                                }
-                                $term3 = $term3->where(['parent_id' => $cat2->id])->get();
+                                $term3->leftJoin('term_taxonomy', 'term_taxonomy.term_id', '=', 'terms.term_id');
+                                $term3 = $term3->where(['term_taxonomy.parent' => $cat2->term_id])->get();
                                 // var_dump($term3->count()); die;
                                 if ($term3->count() > 0) {
                                     $dash2 = '---';
@@ -317,10 +301,8 @@
                                         $html2 .= term_html($cat3, $dash2);
 
                                         $term4 = Term::query();
-                                        if (\c_user()->user_type != 'admin') {
-                                            $term4->where(['user_id' => \c_user()->id]);
-                                        }
-                                        $term4 = $term4->where(['parent_id' => $cat3->id])->get();
+                                        $term4->leftJoin('term_taxonomy', 'term_taxonomy.term_id', '=', 'terms.term_id');
+                                        $term4 = $term4->where(['term_taxonomy.parent' => $cat3->term_id])->get();
                                         // var_dump($term4->count()); die;
                                         if ($term4->count() > 0) {
                                             $dash2 .= '-';
@@ -328,11 +310,8 @@
                                             foreach($term4 as $cat4) {
                                                 $html2 .= term_html($cat4, $dash2);
                                                 $term5 = Term::query();
-                                                if (\c_user()->user_type != 'admin') {
-                                                    $term5->where(['user_id' => \c_user()->id]);
-                                                }
-                                                $term5 = $term5->where(['parent_id' => $cat4->id])->get();
-                                                // var_dump($term5->count()); die;
+                                                $term5->leftJoin('term_taxonomy', 'term_taxonomy.term_id', '=', 'terms.term_id');
+                                                $term5 = $term5->where(['term_taxonomy.parent' => $cat4->term_id])->get();
                                                 if ($term5->count() > 0) {
                                                     $dash2 .= '-';
                                                     
@@ -363,10 +342,10 @@
 
         function get_term_string_format($id) {
             
-            return array_column(Term::select(['title'])
+            return array_column(Term::select(['name'])
             ->whereIn(
-                'id', PostCategoryRelation::select(['cat_id'])->where(['post_id' => $id])->get()->pluck('cat_id')
-            )->get()->toArray(), 'title');
+                'term_id', TermRelationship::select(['term_taxonomy_id'])->where(['object_id' => $id])->get()->pluck('term_taxonomy_id')
+            )->get()->toArray(), 'name');
         }
 
     }
@@ -384,8 +363,13 @@
     if (!function_exists('get_image')) {
 
         function get_image($img) {
-            $imgPath = public_path('/assets/images/'.$img);
-            $url = File::exists($imgPath) && File::isFile($imgPath)  ? asset('public/assets/images/'.$img) : asset('public/assets/images/placeholder-img.jpg');
+            $url = '';
+            if($img != '' && (File::exists(public_path('/assets/images/'.$img)) && File::isFile(public_path('/assets/images/'.$img)))) {
+                $url = asset('public/assets/images/'.$img);
+            }
+            else {
+                $url = asset('public/assets/images/placeholder-img.jpg');
+            }
             return $url;
         }
 
@@ -545,6 +529,32 @@
 
     }
 
+    if (!function_exists('get_admin_panel_post_type_dates')) {
+
+        function get_admin_panel_post_type_dates($record) {
+            
+            $response = '<div class="a-p-date-wrap">';
+            if ($record) {
+                if ($record->post_modified != '' && $record->post_modified != $record->post_date) {
+                    $response .= '<div class="a-p-updated-at">Last Modified <p>'.get_admin_panel_datetime($record->updated_at).'</p></div>';
+                }
+                else if ($record->post_date != '') {
+                    $response .= '<div class="a-p-created-at">Published <p>'.get_admin_panel_datetime($record->created_at).'</p></div>';
+                }
+                
+
+                // if ($record->created_at == $record->updated_at ) {
+                //     $response .= '<div class="a-p-updated-at">'.\Carbon\Carbon::parse($record->created_at)->diffForHumans(\Carbon\Carbon::now()).'</div>';
+                // }
+                // else {
+                //     $response .= '<div class="a-p-updated-at">'.\Carbon\Carbon::parse($record->updated_at)->diffForHumans(\Carbon\Carbon::now()).'</div>';
+                // }
+            }
+            $response .= '</div>';
+            return $response;
+        }
+
+    }
 
     if (!function_exists('get_admin_panel_date')) {
 
@@ -600,12 +610,12 @@
             if (c_user()->is_super_admin != 1) {
                 $id = $req->route()->parameter('id');
                 if ($id != '') {
-                    if ($model::where(['id' => $id, 'user_id' => c_user()->id])->count() == 0) {
+                    if ($model::where(['id' => $id, 'user_id' => c_user()->ID])->count() == 0) {
                         $result = false;
                     }
                 }
                 else if($req->input('action_ids')) {
-                    if ($model::whereIn('id', $req->input('action_ids'))->where(['user_id' => c_user()->id])->count() == 0) {
+                    if ($model::whereIn('id', $req->input('action_ids'))->where(['user_id' => c_user()->ID])->count() == 0) {
                         $result = false;
                     }
                 }
@@ -647,4 +657,9 @@
         }
 
     }
+    function ___($string) {
+        return $string;
+    }
+
+    
 ?>

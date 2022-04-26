@@ -17,9 +17,8 @@ class CreatePostmetaTable extends Migration
             $table->bigIncrements('meta_id');
             $table->unsignedBigInteger('post_id')->default('0');
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
-            $table->string('meta_key')->unique();
+            $table->string('meta_key');
             $table->longText('meta_value');
-            $table->timestamps();
         });
     }
 

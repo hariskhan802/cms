@@ -125,12 +125,12 @@ class TemplateController extends Controller
     public function restore($id = null, Request $req) {
         if (c_user()->is_super_admin != 1) {
             if ($id) {
-                if (Template::where(['id' => $id, 'user_id' => c_user()->id])->count() == 0) {
+                if (Template::where(['id' => $id, 'user_id' => c_user()->ID])->count() == 0) {
                     return back()->with('errormsg', 'Permission Denied');
                 }
             }
             else {
-                if (Template::whereIn('id', $req->input('action_ids'))->where(['user_id' => c_user()->id])->count() == 0) {
+                if (Template::whereIn('id', $req->input('action_ids'))->where(['user_id' => c_user()->ID])->count() == 0) {
                     return back()->with('errormsg', 'Permission Denied');
                 }
             }

@@ -1,24 +1,25 @@
 <?php
     use App\Models\Option;
     use App\Models\Role;
+    use App\Models\Postmeta;
 
     if (!function_exists('get_option')) {
 
-        function get_option($option_name) {
-            $option_value =  Option::select(['option_value'])->where(['option_name' => $option_name])->pluck('option_value')->first();
-            return  $option_value == '[]' ? '' : $option_value;
+        function get_option($optionName) {
+            $optionValue =  Option::select(['option_value'])->where(['option_name' => $optionName])->pluck('option_value')->first();
+            return  $optionValue == '[]' ? '' : $optionValue;
         }
 
     }
 
     if (!function_exists('add_option')) {
 
-        function add_option($option_name, $option_value) {
+        function add_option($optionName, $optionValue) {
             $success = false;
-            if(Option::where('option_name', $option_name)->count() > 0 ) {
+            if(Option::where('option_name', $optionName)->count() > 0 ) {
                 $success = false;
             }
-            else if(Option::create(['option_name' => $option_name, 'option_value' => $option_value])) {
+            else if(Option::create(['option_name' => $optionName, 'option_value' => $optionValue])) {
                 $success = true;
             }
             return $success;
@@ -28,16 +29,16 @@
 
     if (!function_exists('update_option')) {
 
-        function update_option($option_name, $option_value) {
+        function update_option($optionName, $optionValue) {
             $success = false;
             
-            if(Option::where('option_name', $option_name)->count() > 0 ) {
-                if (Option::where(['option_name' => $option_name])->update(['option_value' => $option_value])) {
+            if(Option::where('option_name', $optionName)->count() > 0 ) {
+                if (Option::where(['option_name' => $optionName])->update(['option_value' => $optionValue])) {
                     $success = true;
                 }
                 
             }
-            else if(Option::create(['option_name' => $option_name, 'option_value' => $option_value])) {
+            else if(Option::create(['option_name' => $optionName, 'option_value' => $optionValue])) {
                 $success = true;
             }
             return $success;
@@ -45,7 +46,53 @@
 
     }
 
+    if (!function_exists('get_post_meta')) {
 
+        function get_post_meta($postID = '', $metaKey = '', $single = false) {
+            if ($postID == '') {
+                return cms_error('First argument must be entered');
+            }
+            $postMeta = Postmeta::query();
+            $postMeta->where('post_id', $postID);
+            $columns = $metaKey == '' ? ['meta_key', 'meta_value'] : ['meta_value'];
+            
+            $metaValue =  $postMeta->select($columns)->when($metaKey != '', function($q) use($metaKey){
+                return $q->where('meta_key', $metaKey);
+            });
+            if ($metaKey == '') 
+                $metaValue = $metaValue->get()->toArray();
+            
+            else {
+                if($single == true) 
+                    $metaValue = $metaValue->pluck('meta_value')->first();
+                else 
+                    $metaValue = $metaValue->get()->toArray();
+                
+            }
+            return  $metaValue == '[]' ? '' : $metaValue;
+        }
+
+    }
+
+
+
+    if (!function_exists('update_post_meta')) {
+
+        function update_post_meta($postID, $metaKey, $metaValue) {
+            $success = false;
+            if(Postmeta::where('meta_key', $metaKey)->count() > 0 ) {
+                if (Postmeta::where(['post_id' => $postID, 'meta_key' => $metaKey])->update(['meta_value' => $metaValue])) {
+                    $success = true;
+                }
+                
+            }
+            else if(Postmeta::create(['post_id' => $postID, 'meta_key' => $metaKey, 'meta_value' => $metaValue])) {
+                $success = true;
+            }
+            return $success;
+        }
+
+    }
 
 
     if (!function_exists('get_roles')) {
@@ -118,6 +165,7 @@
 
         function register_post_type($postType = null, $args = []) {
             global $cmsPostTypes;
+            // var_dump($postType); die;
             if (!is_string($postType) || $postType == '') {
                 return cms_error('First argument must be entered');
             }

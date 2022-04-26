@@ -87,23 +87,23 @@
                                 @if($data->count() > 0)
                                     @foreach($data as $record)
                                         <tr>
-                                            <td><input type="checkbox" name="action_ids[]" value="{{ $record->id }}"></td>
-                                            <td>{{ $record->id }}</td>
-                                            <td>{{ $record->title }}</td>
+                                            <td><input type="checkbox" name="action_ids[]" value="{{ $record->term_id }}"></td>
+                                            <td>{{ $record->term_id }}</td>
+                                            <td>{{ $record->name }}</td>
                                             <td>{{ $record->description }}</td>
                                             <td><img src="{{ get_image($record->featured_image) }}" width="50"></td>
                                             <td>{!! get_admin_panel_dates($record) !!}</td>
                                             <td class="action">
                                                 
-                                                <a href="{{ route('edit-'.word_format($name), $record->id) }}" class="edit-record"><i class="fa fa-pencil-alt"></i></a>
-                                                <a href="{{ route('delete-'.word_format($name), $record->id) }}" class="danger-delete">
+                                                <a href="{{ route('edit-'.word_format($name), $record->term_id) }}" class="edit-record"><i class="fa fa-pencil-alt"></i></a>
+                                                <a href="{{ route('delete-'.word_format($name), $record->term_id) }}" class="danger-delete">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
                                             </td>
                                         </tr>
                                         @if (\Request::input('search') == '')
                                         
-                                        {!! get_parent_child_categories_table($record->id) !!}
+                                        {!! get_parent_child_categories_table($record->term_id) !!}
                                         @endif
                                     @endforeach
                                 @else

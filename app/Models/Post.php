@@ -8,10 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Post extends Model
 {
     use HasFactory;
-    protected $guarded = ['id'];
-    protected $appends = ['cats'];
+    protected $primaryKey = 'ID';
+    protected $guarded = ['ID'];
+    protected $appends = ['cats', 'featured_image'];
+    public $timestamps = false;
     public function getCatsAttribute() {
-        return \App\Models\PostCategoryRelation::select(['cat_id'])->where(['post_id' => $this->id])->get()->pluck('cat_id');
+        return \App\Models\TermRelationship::select(['term_taxonomy_id'])->where(['object_id' => $this->ID])->get()->pluck('term_taxonomy_id');
+    }
+    public function getFeaturedImageAttribute() {
+        return get_post_meta($this->ID, '__featured_image', true);
     }
 
     // public function getCreatedAtAttribute($date)

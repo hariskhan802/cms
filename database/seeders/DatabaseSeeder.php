@@ -17,27 +17,29 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory(10)->create();
         DB::table('users')->insert([
             [
-                'name' => 'haris',
-                'email' => 'haris@abc.com',
-                'password' => bcrypt('haris123'),
-                'image' => '',
-                'email_verified_at' => now(),
-                'role_id' => '1',
+                'user_login' => 'haris',
+                'user_pass' => bcrypt('haris123'),
+                'user_nicename' => 'haris',
+                'user_email' => 'haris@abc.com',
+                'user_url' => 'http://localhost/wordpress',
                 'is_super_admin' => '1',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'user_registered' => now(),
+                'user_activation_key' => '',
+                'user_status' => 1,
+                'display_name' => 'haris',
             ],
             [
-                'name' => 'ali',
-                'email' => 'ali@abc.com',
-                'password' => bcrypt('ali123'),
-                'image' => '',
-                'email_verified_at' => now(),
-                'role_id' => '2',
-                'is_super_admin' => '0',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
+                'user_login' => 'ali',
+                'user_pass' => bcrypt('ali123'),
+                'user_nicename' => 'ali',
+                'user_email' => 'ali@abc.com',
+                'user_url' => 'http://localhost/wordpress',
+                'is_super_admin' => '1',
+                'user_registered' => now(),
+                'user_activation_key' => '',
+                'user_status' => 1,
+                'display_name' => 'ali',
+            ],
         ]);
         DB::table('templates')->insert([
                 'title' => 'Template 1',
@@ -111,44 +113,88 @@ class DatabaseSeeder extends Seeder
                 
         //     ],
         // ]);
-        $postArr = [];
+        /* $postArr = [];
         for ($i=1; $i <= 5000; $i++) { 
             # code...
             $postArr [] = [
                 'post_title' => 'Post '.$i,
-                'post_name' => 'post-'.$i,
-                'post_content' => 'test',
-                'post_content_filtered' => '',
-                'post_status' => 'published',
-                'post_type' => 'post',
-                'user_id' => 1,
-                'menu_order' => '0',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-        }
-        $postArr [] = [
-                    'title' => 'Page 1',
-                    'slug' => 'page-1',
-                    'content' => 'test',
-                    'featured_image' => '',
+                    'post_name' => 'post-'.$i,
+                    'post_content' => 'test',
+                    'post_excerpt' => 'test',
+                    'post_password' => '',
+                    'post_mime_type' => '',
+                    'pinged' => '',
+                    'to_ping' => '',
+                    'guid' => '',
+                    'post_content_filtered' => '',
                     'post_status' => 'published',
                     'post_type' => 'page',
-                    'user_id' => 1,
-                    'menu_order' => '0',
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'post_author' => 1,
+                    'post_date' => now(),
+                    'post_date_gmt' => now(),
+                    'post_modified' => now(),
+                    'post_modified_gmt' => now(),
+            ];
+        } */
+        $postArr [] = [
+            'post_title' => 'Post 1',
+            'post_name' => 'post-1',
+            'post_content' => 'test',
+            'post_excerpt' => 'test',
+            'post_password' => '',
+            'post_mime_type' => '',
+            'pinged' => '',
+            'to_ping' => '',
+            'guid' => '',
+            'post_content_filtered' => '',
+            'post_status' => 'publish',
+            'post_type' => 'post',
+            'post_author' => 1,
+            'post_date' => now(),
+            'post_date_gmt' => now(),
+            'post_modified' => now(),
+            'post_modified_gmt' => now(),
+            
+        ];
+        $postArr [] = [
+                    'post_title' => 'Page 1',
+                    'post_name' => 'page-1',
+                    'post_content' => 'test',
+                    'post_excerpt' => 'test',
+                    'post_password' => '',
+                    'post_mime_type' => '',
+                    'pinged' => '',
+                    'to_ping' => '',
+                    'guid' => '',
+                    'post_content_filtered' => '',
+                    'post_status' => 'publish',
+                    'post_type' => 'page',
+                    'post_author' => 1,
+                    'post_date' => now(),
+                    'post_date_gmt' => now(),
+                    'post_modified' => now(),
+                    'post_modified_gmt' => now(),
                     
                 ];
         DB::table('posts')->insert($postArr);
         
-        DB::table('postmetas')->insert([
+        DB::table('postmeta')->insert([
             [
                 'post_id' => 2,
                 'meta_key' => '__template_id',
                 'meta_value' => 5001,
-                'created_at' => now(),
-                'updated_at' => now(),
+                
+            ],
+            [
+                'post_id' => 2,
+                'meta_key' => '__featured_image',
+                'meta_value' => 'img-624e02d87153d1649279704.jpg',
+                
+            ],
+            [
+                'post_id' => 1,
+                'meta_key' => '__featured_image',
+                'meta_value' => '',
                 
             ],
         ]);
@@ -171,21 +217,29 @@ class DatabaseSeeder extends Seeder
 
         DB::table('comments')->insert([
             [
-                'comment' => 'Comment 1',
+                'comment_post_ID' => '1',
+                'comment_author' => 1,
+                'comment_author_email' => 'haris@abc.com',
+                'comment_author_url' => 'http://localhost/cms',
+                'comment_author_IP' => '',
+                'comment_date_gmt' => now(),
+                'comment_content' => 'Hello comment 1',
+                'comment_approved' => 0,
+                'comment_agent' => '',
                 'user_id' => 1,
-                'post_id' => 1,
-                'status' => 'pending',
-                'created_at' => now(),
-                'updated_at' => now(),
                 
             ],
             [
-                'comment' => 'Comment 2',
+                'comment_post_ID' => '1',
+                'comment_author' => 1,
+                'comment_author_email' => 'haris@abc.com',
+                'comment_author_url' => 'http://localhost/cms',
+                'comment_author_IP' => '',
+                'comment_date_gmt' => now(),
+                'comment_content' => 'Hello comment 2',
+                'comment_approved' => 0,
+                'comment_agent' => '',
                 'user_id' => 1,
-                'post_id' => 1,
-                'status' => 'pending',
-                'created_at' => now(),
-                'updated_at' => now(),
                 
             ],
         ]);

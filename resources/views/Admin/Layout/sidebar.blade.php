@@ -28,7 +28,7 @@
                 <li class="nav-item {{ ( (Route::is('posts') || Route::is('add-post')  || Route::is('edit-post')) && \Request::get('post_type') == array_value(get_post_types(), $key) ) ? 'active' : '' }}">
                     <a class="nav-link " href="{{ route('posts').'?post_type='.array_value(get_post_types(), $key) }}" >
                         <i class="fas fa-fw fa-folder"></i>
-                        <span>{{ array_value($postType, 'name')  }}</span>
+                        <span>{{ array_value(array_value($postType, 'labels'), 'name')  }}</span>
                     </a>
                     <div id="collapsePosts" class="cus-sub-menu collapse  {{ ( (Route::is('posts') || Route::is('add-post')  || Route::is('edit-post')) && \Request::get('post_type') == array_value(get_post_types(), $key) ) ? 'show' : '' }} " aria-labelledby="headingPages"
                         data-parent="#accordionSidebar">
@@ -42,8 +42,11 @@
                             @if (is_array(array_value($postType, 'taxonomies')))
                                                                 
                                 @foreach(array_value($postType, 'taxonomies') as $taxKey => $taxonomy)
+                                @php
+                                    // print_r(array_value(array_value($taxonomy, 'labels'), 'name')); die;
+                                @endphp
                                 <li class="{{ (Route::is('terms') && \Request::get('post_type') == array_value(get_post_types(), $key) ) ? 'active' : '' }}">
-                                    <a href="{{ get_admin_taxonomy_url(['name' => 'terms'], $taxKey, array_value(get_post_types(), $key)) }}">{{ array_value($taxonomy, 'name') }}</a>
+                                    <a href="{{ get_admin_taxonomy_url(['name' => 'terms'], $taxKey, array_value(get_post_types(), $key)) }}">{{ array_value(array_value($taxonomy, 'labels'), 'name') }}</a>
                                 </li>
                                 @endforeach
                             @endif

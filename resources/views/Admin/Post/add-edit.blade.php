@@ -5,25 +5,25 @@
     <div class="main-wrap post-type-form {{ $postType.'-wrap' }}">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">{{ $currentPostType['singular_name']  }}</h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{ array_value(array_value($currentPostType, 'labels'), 'singular_name')  }}</h6>
             </div>
             <div class="card-body">
                 <div class="form-wrap">
                     <form method="post" action="{{ \Request::route()->getName() == 'edit-post' ? get_admin_post_type_url(['name' => 'edit-post', 'id' => \Request::route()->parameter('id')], $currentPostType['post_type']) : get_admin_post_type_url(['name' => 'add-post'], $currentPostType['post_type'] ) }}">    
                         <div class="form-group">
                             <label>Title</label>
-                            <input type="text" class="form-control" placeholder="Title" name="title" required>
+                            <input type="text" class="form-control" placeholder="Title" name="post_title" required>
                             <small class="error-msg"></small>
                         </div>
                         <div class="form-group">
                             <label>Slug</label>
-                            <input type="text" class="form-control" placeholder="Slug" name="slug" required>
+                            <input type="text" class="form-control" placeholder="Slug" name="slug" >
                             <small class="error-msg"></small>
                         </div>
                         @if($postType != 'page')
                         <div class="form-group">
                             <label>Category</label>
-                            <select name="cats[]"  class="form-control" multiple required>
+                            <select name="cats[]"  class="form-control" multiple >
                                 <option value="">Select Category</option>
                                 {!! get_parent_child_categories_dropdown('0') !!}
                             </select>
@@ -42,12 +42,17 @@
                         @endif
                         <div class="form-group">
                             <label>Content</label>
-                            <textarea name="content" class="form-control" id="html-editor" placeholder="Content"></textarea>
+                            <textarea name="post_content" class="form-control" id="html-editor" placeholder="Content"></textarea>
+                            <small class="error-msg"></small>
+                        </div>
+                        <div class="form-group">
+                            <label>Excerpt</label>
+                            <textarea name="post_excerpt" rows="4" class="form-control" placeholder="Excerpt"></textarea>
                             <small class="error-msg"></small>
                         </div>
                         <div class="form-group img-f-g">
                             <label>Featured Image</label>
-                            <input type="file" name="featured_image" accept="image/*"  required />
+                            <input type="file" name="featured_image" accept="image/*"   />
                             <small class="error-msg"></small>
                         </div>
                     

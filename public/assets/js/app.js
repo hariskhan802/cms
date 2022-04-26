@@ -363,7 +363,7 @@
                 $(this).closest('form').trigger('submit');
             }
         });
-        $('[name="title"]').bind('blur', function(e) {
+        $('[name="post_title"]').bind('blur', function(e) {
             console.log($('[name="slug"]').val() == '');
             if ($('[name="slug"]').val() == '') {
                 $('[name="slug"]').val(convertToSlug($(this).val()))

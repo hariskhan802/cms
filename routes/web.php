@@ -26,13 +26,13 @@ use App\Http\Controllers\Admin\{
 
 
 Route::get('/test321', function(){
-    $cats = [
-        'name' => 'Women',
-        'slug' => 'women',
+    // $cats = [
+    //     'name' => 'Women',
+    //     'slug' => 'women',
         
-    ];
-    var_dump(DB::table('terms')->insertGetId($cats)); die;
-
+    // ];
+    // var_dump(DB::table('terms')->insertGetId($cats)); die;
+    dd(get_post_meta(1, '__featured_image', true));
 });
 
 
