@@ -46,24 +46,24 @@
                                         </div>
                                         <div class="form-group">
                                             <label>Name</label>
-                                            <input type="text" class="form-control" placeholder="Name" name="name" value="{{ c_user()->name }}" required>
+                                            <input type="text" class="form-control" placeholder="Name" name="name" value="{{ array_value(c_user(), 'display_name') }}" required>
                                             <small class="error-msg"></small>
                                         </div>
                                         <div class="form-group">
                                             <label>Email</label>
-                                            <input type="email" class="form-control" placeholder="Email" name="email" value="{{ c_user()->email }}"  required>
+                                            <input type="email" class="form-control" placeholder="Email" name="email" value="{{ array_value(c_user(), 'user_email') }}"  required>
                                             <small class="error-msg"></small>
                                         </div>
                                         
                                         <div class="form-group img-f-g">
                                             <label>Image</label>
-                                            <input type="file" name="image" accept="image/*" {{ c_user()->image == '' ? 'required' : '' }} />
+                                            <input type="file" name="image" accept="image/*" {{ array_value(c_user(), 'image') == '' ? 'required' : '' }} />
                                             <small class="error-msg"></small>
                                             
-                                            <img src="{{ get_user_image(c_user()->image) }}" width="50">
+                                            <img src="{{ get_user_image(array_value(c_user(), 'image')) }}" width="50">
                                         </div>
                                         <div class="form-group">
-                                            <input type="hidden" name="_image" value="{{c_user()->image}}">
+                                            <input type="hidden" name="_image" value="{{array_value(c_user(), 'image')}}">
                                             <input type="hidden" name="_token" value="{{ @csrf_token() }}">
                                             <input type="submit" name="submit" value="Update" class="btn btn-primary pull-right">
                                             

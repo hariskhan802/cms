@@ -13,13 +13,13 @@
                     <div class="form-wrap">
                     
                         <div class="form-group">
-                            <label>Title</label>
-                            <input type="text" class="form-control" placeholder="Title" name="title" required>
+                            <label>Name</label>
+                            <input type="text" class="form-control" placeholder="Name" name="name" required>
                             <small class="error-msg"></small>
                         </div>
                         <div class="form-group">
                             <label>Slug</label>
-                            <input type="text" class="form-control" placeholder="Slug" name="slug" required>
+                            <input type="text" class="form-control" placeholder="Slug" name="slug" >
                             <small class="error-msg"></small>
                         </div>
                         
@@ -30,12 +30,12 @@
                         </div>
                         <div class="form-group img-f-g">
                             <label>Featured Image</label>
-                            <input type="file" name="featured_image" accept="image/*"  required />
+                            <input type="file" name="featured_image" accept="image/*"   />
                             <small class="error-msg"></small>
                         </div>
                         <div class="form-group">
                             <label>Parent Category</label>
-                            <select name="parent_id"  class="form-control" required>
+                            <select name="parent_id"  class="form-control" >
                                 <option value="0">Parent Category</option>
                                 
                                 @foreach($terms as $term)

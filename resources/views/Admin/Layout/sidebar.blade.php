@@ -6,15 +6,15 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">Ziltex CMS</div>
+                <div class="sidebar-brand-text mx-3">CMS</div>
             </a>
 
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a class="nav-link {{ Route::is('dashboard') ? 'active' : '' }} " href="{{ route('dashboard') }}">
+            <li class="nav-item {{ Route::is('dashboard') ? 'active' : '' }} ">
+                <a class="nav-link " href="{{ route('dashboard') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
@@ -24,13 +24,36 @@
             @if(is_array(get_post_types_object()))
                 
                 @foreach(get_post_types_object() as $key => $postType)
-                
-                <li class="nav-item {{ ( (Route::is('posts') || Route::is('add-post')  || Route::is('edit-post')) && \Request::get('post_type') == array_value(get_post_types(), $key) ) ? 'active' : '' }}">
-                    <a class="nav-link " href="{{ route('posts').'?post_type='.array_value(get_post_types(), $key) }}" >
+                @php
+                        $actPT = ['isActive' => false, 'isShow' => false];
+                 
+                        if( ( (Route::is('posts') || Route::is('add-post')  || Route::is('edit-post')) || (Route::is('terms') || Route::is('add-term')  || Route::is('edit-term'))) ) {
+                            
+                            if (\Request::get('post_type') == array_value(get_post_types(), $key) && \Request::get('taxonomy') == array_value(get_taxonomies(), $key) ) {
+                                $actPT['isActive'] = true;
+                                $actPT['isShow'] = true;
+                            }
+                            else if (\Request::get('post_type') == array_value(get_post_types(), $key) ) {
+                                $actPT['isActive'] = true;
+                                $actPT['isShow'] = true;
+                            }
+                            
+                        }
+                        // print_r($actPT);
+                        // die;
+                        // var_dump( (\Request::get('post_type') == array_value(get_post_types(), $key) && \Request::get('taxonomy') == array_value(get_taxonomies(), $key) );
+                        // var_dump(\Request::get('post_type') == array_value(get_post_types(), $key) || \Request::get('taxonomy') == array_value(get_taxonomies(), $key));
+                        // print_r($actPT);    
+                        @endphp
+                <li class="nav-item {{ $actPT['isActive'] === true ? 'active' : '' }}">
+                    <a class="nav-link " href="{{ get_admin_post_type_url(['name' => 'posts'], array_value(get_post_types(), $key)) }}" >
                         <i class="fas fa-fw fa-folder"></i>
                         <span>{{ array_value(array_value($postType, 'labels'), 'name')  }}</span>
                     </a>
-                    <div id="collapsePosts" class="cus-sub-menu collapse  {{ ( (Route::is('posts') || Route::is('add-post')  || Route::is('edit-post')) && \Request::get('post_type') == array_value(get_post_types(), $key) ) ? 'show' : '' }} " aria-labelledby="headingPages"
+                    
+                    <div id="collapsePosts" class="cus-sub-menu collapse  
+                    {{ $actPT['isShow'] === true ? 'show' : '' }} " 
+                        aria-labelledby="headingPages"
                         data-parent="#accordionSidebar">
                         <ul>
                             <li class="{{ (Route::is('posts') && \Request::get('post_type') == array_value(get_post_types(), $key) ) ? 'active' : '' }}">
@@ -43,10 +66,13 @@
                                                                 
                                 @foreach(array_value($postType, 'taxonomies') as $taxKey => $taxonomy)
                                 @php
-                                    // print_r(array_value(array_value($taxonomy, 'labels'), 'name')); die;
+                                    // print_r(get_taxonomies()[$key]); 
+                                    // print_r(\Request::get('taxonomy'));
+                                    // echo 'test';
+                                    // die;
                                 @endphp
-                                <li class="{{ (Route::is('terms') && \Request::get('post_type') == array_value(get_post_types(), $key) ) ? 'active' : '' }}">
-                                    <a href="{{ get_admin_taxonomy_url(['name' => 'terms'], $taxKey, array_value(get_post_types(), $key)) }}">{{ array_value(array_value($taxonomy, 'labels'), 'name') }}</a>
+                                <li class="{{ (Route::is('terms') && \Request::get('taxonomy') == $taxKey ) ? 'active' : '' }}">
+                                    <a href="{{ get_admin_taxonomy_url( ['name' => 'terms'], $taxKey, array_value(get_post_types(), $key) ) }}">{{ array_value(array_value($taxonomy, 'labels'), 'name') }}</a>
                                 </li>
                                 @endforeach
                             @endif

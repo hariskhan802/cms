@@ -147,7 +147,7 @@
                 if (data.status == 'success') {
                     var post_status = '';
                     var item = data.item;
-                    if (data.item.post_status == 'drafted') {
+                    if (data.item.post_status == 'draft') {
                         post_status = 'Publish';
                     }
                     else {
@@ -261,6 +261,8 @@
             e.preventDefault();
             $('[name="submit"]').prop('disabled', true);
             $('.error-msg').empty();
+            console.log($('[name="post_title"]').val());
+            // $('[name="slug"]').val(convertToSlug($(this).val()))
             var extraData = [];
             extraData.push({submit: $(this).find('[type="submit"]').attr('value')});
             __ajax(this, extraData).then(function(data) {
@@ -281,14 +283,34 @@
                     setTimeout(function(){
                         $('#add-edit-modal').modal('toggle');
                         if ($('.edit-page').length > 0) {
-                            window.location.href = app_url+'/admin/'+$('.edit-page').attr('parent-page-name')+'/?post_type='+postType;
+                            
+                            var queryStringCT = '';
+                            if ($('.edit-page').hasClass('taxonomy')) {
+                                queryStringCT = '?taxonomy='+taxonomy+'&post_type='+postType;
+                                
+                            }
+                            else if ($('.edit-page').hasClass('post-type')) {
+                                queryStringCT = '?post_type='+postType;
+                            }
+                            // console.log(queryStringCT);
+                            // return;
+                            window.location.href = app_url+'/admin/'+$('.edit-page').attr('parent-page-name')+''+queryStringCT;
                         }
                         else {
-                            if (postType != '') {
+                            var queryStringCT = '';
+                            if ($('body').hasClass('taxonomy') || $('body').hasClass('post_type')) {
+                                if ($('body').hasClass('taxonomy')) {
+                                    queryStringCT = '?taxonomy='+taxonomy+'&post_type='+postType;
+                                    
+                                }
+                                else if ($('body').hasClass('post_type')) {
+                                    queryStringCT = '?post_type='+postType;
+                                }
                                 // console.log( app_url+'/admin/'+$('.post-type').attr('parent-page-name')+'/?post_type='+postType)
                                 // return;
-                                window.location.href = app_url+'/admin/'+$('.post-type').attr('parent-page-name')+'/?post_type='+postType;
-                            }else{
+                                window.location.href = app_url+'/admin/'+$('.post-type').attr('parent-page-name')+'/'+queryStringCT;
+                            }
+                            else{
                                 location.reload();
                             }
                         }
@@ -363,8 +385,7 @@
                 $(this).closest('form').trigger('submit');
             }
         });
-        $('[name="post_title"]').bind('blur', function(e) {
-            console.log($('[name="slug"]').val() == '');
+        $('[name="post_title"], [name="name"]').bind('blur', function(e) {
             if ($('[name="slug"]').val() == '') {
                 $('[name="slug"]').val(convertToSlug($(this).val()))
             }
@@ -427,8 +448,13 @@
         }
         $('#add-edit-modal').bind('hidden.bs.modal', function () {
            if ($('body.edit-page').length > 0) {
+                if ($('body.edit-page').hasClass('taxonomy')) {
+                    history.pushState(null, 'CMS', app_url+'/admin/'+$('body').attr('parent-page-name')+"?taxonomy="+taxonomy+"&post_type="+postType);
+                }
+                else{
+                    history.pushState(null, 'CMS', app_url+'/admin/'+$('body').attr('parent-page-name'));
+                }
                 $('body').removeClass('edit-page');
-                history.pushState(null, 'CMS', app_url+'/admin/'+$('body').attr('parent-page-name'));
            }
         });
 

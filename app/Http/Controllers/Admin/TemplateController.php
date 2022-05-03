@@ -46,7 +46,7 @@ class TemplateController extends Controller
         return $response;
     }
     public function edit($id, Request $req) {
-        if (c_user()->is_super_admin != 1) {
+        if (array_value(c_user(), 'is_super_admin') != 1) {
             if (Template::where(['id' => $id])->count() == 0) {
                 $response['errors'] = 'Permission Denied';
                 $response['status'] = 'permissiondenied';
@@ -93,7 +93,7 @@ class TemplateController extends Controller
 
     }
     public function delete($id = null, Request $req) {
-        if (c_user()->is_super_admin != 1) {
+        if (array_value(c_user(), 'is_super_admin') != 1) {
             if ($id) {
                 if (Template::where(['id' => $id,])->count() == 0) {
                     return back()->with('errormsg', 'Permission Denied');
@@ -123,14 +123,14 @@ class TemplateController extends Controller
     }
 
     public function restore($id = null, Request $req) {
-        if (c_user()->is_super_admin != 1) {
+        if (array_value(c_user(), 'is_super_admin') != 1) {
             if ($id) {
-                if (Template::where(['id' => $id, 'user_id' => c_user()->ID])->count() == 0) {
+                if (Template::where(['id' => $id, 'user_id' => array_value(c_user(), 'ID')])->count() == 0) {
                     return back()->with('errormsg', 'Permission Denied');
                 }
             }
             else {
-                if (Template::whereIn('id', $req->input('action_ids'))->where(['user_id' => c_user()->ID])->count() == 0) {
+                if (Template::whereIn('id', $req->input('action_ids'))->where(['user_id' => array_value(c_user(), 'ID')])->count() == 0) {
                     return back()->with('errormsg', 'Permission Denied');
                 }
             }

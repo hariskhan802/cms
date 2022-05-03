@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Term extends Model
 {
     use HasFactory;
-    protected $guarded = ['id'];
-    
+    protected $guarded = ['term_id'];
+    protected $primaryKey = 'term_id';
+    public $timestamps = false;
     // public function getCreatedAtAttribute($date)
     // {
     //     $dateC = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $date)->format(get_admin_panel_date());

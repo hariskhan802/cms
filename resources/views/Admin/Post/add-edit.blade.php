@@ -35,7 +35,11 @@
                             <label>Template</label>
                             <select name="template_id"  class="form-control" required>
                                 <option value="">Select Template</option>
-                                
+                                @if ($templates->count() > 0)
+                                    @foreach ($templates as $template)
+                                        <option value="{{ $template->id }}">{{ $template->title }}</option>
+                                    @endforeach
+                                @endif
                             </select>
                             <small class="error-msg"></small>
                         </div>

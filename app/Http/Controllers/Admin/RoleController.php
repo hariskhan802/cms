@@ -29,7 +29,7 @@ class RoleController extends Controller
         $validated = Validator::make($data, [
             'role' => 'required|min:2',
         ]);
-        $data['user_id'] = c_user()->ID;
+        $data['user_id'] = array_value(c_user(), 'ID');
         $data['post_status'] = 'drafted';
         if ($data['_status'] == 'Publish') {
             $data['post_status'] = 'published';
@@ -47,7 +47,7 @@ class RoleController extends Controller
         return $response;
     }
     public function edit($id, Request $req) {
-        if (c_user()->is_super_admin != 1) {
+        if (array_value(c_user(), 'is_super_admin') != 1) {
             if (Role::where(['id' => $id,])->count() == 0) {
                 $response['errors'] = 'Permission Denied';
                 $response['status'] = 'permissiondenied';

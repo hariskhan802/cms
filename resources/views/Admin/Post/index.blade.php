@@ -92,6 +92,8 @@
                                     <th>Author</th>
                                     @if($postType != 'page')
                                     <th>Category</th>
+                                    @else
+                                    <th>Template</th>
                                     @endif
                                     <th>Featured Image</th>
                                     <th>Date</th>
@@ -99,6 +101,7 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                
                                 @if($data->count() > 0)
                                     
                                     @foreach($data as $record)
@@ -109,6 +112,8 @@
                                             <td>{{ $record->display_name }}</td>
                                             @if($postType != 'page')
                                             <td><p>{!! implode("<br> ", get_term_string_format($record->ID)) !!}</p></td>
+                                            @else
+                                            <td>{{ array_value(get_template(get_post_meta($record->ID, '__template_id', true)), 'title') }}</td>
                                             @endif
                                             <td><img src="{{ get_image(get_post_meta($record->ID, '__featured_image', true)) }}" width="50"></td>
                                             <td>{!! get_admin_panel_post_type_dates($record) !!}</td>

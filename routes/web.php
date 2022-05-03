@@ -43,9 +43,9 @@ Route::get('/', function(){
     echo '<img src="'.get_user_image('img-623cde3a98177164815621.jpg').'" />';
 });
 
-Route::fallback(function () {
-    return redirect("/");
-});
+// Route::fallback(function () {
+//     return redirect("/");
+// });
 
 Route::group(['prefix' => 'admin', 'middleware' => ['AdminCheck']], function() {
     

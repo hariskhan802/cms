@@ -19,31 +19,27 @@ class UserController extends Controller
         $name = 'user';
         $totalRecords = $user1->count();
         if ($req->input('search')) {
-            $user2->where('users.name', 'like', "%{$req->input('search')}%")->orWhere('users.email', 'like', "%{$req->input('search')}%");
+            $user2->where('users.display_name', 'like', "%{$req->input('search')}%")->orWhere('users.user_email', 'like', "%{$req->input('search')}%");
         }
-        $dom = new DOMDocument;
-    $finder = new \Illuminate\View\FileViewFinder(app()['files'], array(resource_path().'/views'));
-    // // file_get_contents(); die;
-    $endpoint = \Request::url();
-    // var_dump($endpoint); die;
-    $client = new \GuzzleHttp\Client();
+        /* $dom = new DOMDocument;
+        $finder = new \Illuminate\View\FileViewFinder(app()['files'], array(resource_path().'/views'));
+        $endpoint = \Request::url();
+        $client = new \GuzzleHttp\Client();
 
-    $response = $client->get($endpoint, [
-                    GuzzleHttp\RequestOptions::JSON => ['key1' => 'test'],
-                ]);
+        $response = $client->get($endpoint, [
+                        GuzzleHttp\RequestOptions::JSON => ['key1' => 'test'],
+                    ]);
 
-    // $statusCode = $response->getStatusCode();
-    var_dump($response);
-    $dom->loadHTML('');
-    $imgs = $dom->getElementsByTagName('img');
-    print_r($imgs); die;
-    foreach ($imgs as $img) {
-            // $img->setAttribute('class', $img->getAttribute('class').' myclass');
+        var_dump($response);
+        $dom->loadHTML('');
+        $imgs = $dom->getElementsByTagName('img');
+            print_r($imgs); die;
+        foreach ($imgs as $img) {
             $img->setAttribute('loading', 'lazy');
-    }
-    $html = $dom->saveHTML();
-    return $html;
-        return view('Admin.User.index', ['name' => $name, 'roles' => Role::select(['id', 'role'])->get(), 'totalRecords' => $totalRecords, 'data' => $user2->select(['users.id', 'users.name', 'users.email', 'users.image', 'users.role_id', 'users.is_super_admin', 'users.created_at', 'users.updated_at'])->orderBy('users.id', 'DESC')->paginate(10)]);
+        }
+        $html = $dom->saveHTML();
+        return $html; */
+        return view('Admin.User.index', ['name' => $name, 'roles' => Role::select(['id', 'role'])->get(), 'totalRecords' => $totalRecords, 'data' => $user2->select(['users.ID', 'users.display_name', 'users.user_email', 'users.is_super_admin', 'users.user_registered'])->orderBy('users.id', 'DESC')->paginate(10)]);
     }
     public function index(Request $req) {
         return $this->add_edit_and_listing($req);        
@@ -81,7 +77,7 @@ class UserController extends Controller
         return $response;
     }
     public function edit($id, Request $req) {
-        if (c_user()->is_super_admin != 1) {
+        if (array_value(c_user(), 'is_super_admin') != 1) {
             if (User::where(['id' => $id])->count() == 0) {
                 $response['errors'] = 'Permission Denied';
                 $response['status'] = 'permissiondenied';
@@ -148,7 +144,7 @@ class UserController extends Controller
 
     }
     public function delete($id = null, Request $req) {
-        if (c_user()->is_super_admin != 1) {
+        if (array_value(c_user(), 'is_super_admin') != 1) {
             if ($id) {
                 if (User::where(['id' => $id,])->count() == 0) {
                     return back()->with('errormsg', 'Permission Denied');
@@ -184,14 +180,14 @@ class UserController extends Controller
     }
 
     public function restore($id = null, Request $req) {
-        if (c_user()->is_super_admin != 1) {
+        if (array_value(c_user(), 'is_super_admin') != 1) {
             if ($id) {
-                if (User::where(['id' => $id, 'user_id' => c_user()->ID])->count() == 0) {
+                if (User::where(['id' => $id, 'user_id' => array_value(c_user(), 'ID')])->count() == 0) {
                     return back()->with('errormsg', 'Permission Denied');
                 }
             }
             else {
-                if (User::whereIn('id', $req->input('action_ids'))->where(['user_id' => c_user()->ID])->count() == 0) {
+                if (User::whereIn('id', $req->input('action_ids'))->where(['user_id' => array_value(c_user(), 'ID')])->count() == 0) {
                     return back()->with('errormsg', 'Permission Denied');
                 }
             }

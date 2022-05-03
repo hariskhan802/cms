@@ -89,21 +89,21 @@
                                     @foreach($data as $record)
                                         <tr>
                                             <td><input type="checkbox" name="action_ids[]" value="{{ $record->id }}"></td>
-                                            <td>{{ $record->id }}</td>
-                                            <td>{{ $record->name }}</td>
-                                            <td>{{ $record->email }}</td>
+                                            <td>{{ $record->ID }}</td>
+                                            <td>{{ $record->display_name }}</td>
+                                            <td>{{ $record->user_email }}</td>
                                             <td><img src="{{ get_user_image($record->image) }}" width="50"></td>
-                                            <td>{{ $record->role->role }}</td>
-                                            <td>{!! get_admin_panel_dates($record) !!}</td>
+                                            <td>{{-- $record->role->role --}}</td>
+                                            <td>{!! get_admin_panel_user_dates($record) !!}</td>
                                             <td class="action">
                                                 @if(\Request::input('status') != 'trash')
-                                                <a href="{{ route('edit-'.word_format($name), $record->id) }}" class="edit-record"><i class="fa fa-pencil-alt"></i></a>
+                                                <a href="{{ route('edit-'.word_format($name), $record->ID) }}" class="edit-record"><i class="fa fa-pencil-alt"></i></a>
                                                 @else
-                                                <a href="{{ route('restore-'.word_format($name), $record->id) }}">
+                                                <a href="{{ route('restore-'.word_format($name), $record->ID) }}">
                                                     <i class="fa fa-undo"></i>
                                                 </a>
                                                 @endif
-                                                <a href="{{ route('delete-'.word_format($name), $record->id) }}" class="danger-delete">
+                                                <a href="{{ route('delete-'.word_format($name), $record->ID) }}" class="danger-delete">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
                                             </td>

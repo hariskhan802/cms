@@ -24,29 +24,62 @@ class AuthController extends Controller
             if ($validated->fails()) {
                 return back()->withErrors($validated)->withInput();
             }
-            
-            if (Auth::attempt(['email' => $data['email'], 'password' =>  $data['password']], $req->input('rememberme'))) {
+            // var_dump($data['email']);
+            // var_dump(bcrypt($data['password']));
+            // die;
+            /* if (Auth::attempt(['user_email' => $data['email'], 'user_pass' =>  bcrypt($data['password'])], $req->input('rememberme'))) {
                 if ($req->query('redirect')){
-                    return redirect($request->query('redirect'));
+                    return redirect($req->query('redirect'));
                 }
                 return redirect($redirectTo);
             }
             else {
                 return back()->with('errormsg', 'Email or password is incorrect!');
-            }
+            } */
+            $userInfo = \App\Models\User::where(['user_email' => $data['email']])->first();
 
+            // dd($userInfo);
+            if ($userInfo) {
+                if (\Hash::check($data['password'], $userInfo->user_pass)) {
+                    $userInfo = $userInfo->toArray();
+                    session()->put($userInfo);
+                    // print_r($req->query('redirect')); die;
+                    if ($req->query('redirect')){
+
+                        return redirect($req->query('redirect'));
+                    }
+                    return redirect($redirectTo);
+                }
+                else{
+                    return back()->with('message', 'Email or password is incorrect!');
+
+                }
+            }
+            else{
+                return back()->with('message', 'Email or password is incorrect!');
+            }
         }
         else {
             return view('Admin.Auth.login');
         }
     }
     public function logout(Request $req) {
-        Auth::logout();
+        session()->pull('ID');
+        session()->pull('user_login');
+        session()->pull('user_nicename');
+        session()->pull('user_email');
+        session()->pull('user_url');
+        session()->pull('user_registered');
+        session()->pull('user_activation_key');
+        session()->pull('user_status');
+        session()->pull('display_name');
+        session()->pull('is_super_admin');
+        
         return redirect(route('admin-login'));
     }
 
     public function profile(Request $req) {
-        $user = \App\Models\User::findOrfail(c_user()->ID);
+        $user = \App\Models\User::findOrfail(array_value(c_user(), 'ID'));
         if ($req->isMethod('post')) {
             $data = $req->all();
             $vArgs = [];
@@ -100,7 +133,7 @@ class AuthController extends Controller
                 $img->save($path.'/'.$input['imagename'], 50);
                 $data['image'] = $input['imagename'];
             }
-            if (\App\Models\User::findOrfail(c_user()->ID)->update($data)) {
+            if (\App\Models\User::findOrfail(array_value(c_user(), 'ID'))->update($data)) {
                 $response['status'] = 'success';
                 $response['message'] = 'You have updated successfully';
             }
@@ -116,4 +149,5 @@ class AuthController extends Controller
     public function settings(Request $req) {
         
     }
+    
 }

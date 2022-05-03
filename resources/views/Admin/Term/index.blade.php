@@ -6,6 +6,8 @@
 
 	<div class="main-wrap  {{ $name.'-wrap' }}">
         <form>
+            <input type="hidden" name="taxonomy" value="{{ array_value($currentTaxonomy, 'taxonomy') }}" />
+            <input type="hidden" name="post_type" value="{{ array_value($currentPostType, 'post_type') }}" />
             @if(session('msg'))
             <div class="card mb-4 border-left-success">
                 <div class="card-body">
@@ -22,7 +24,7 @@
             </div>
             @endif
             <div class="btn-wrap">
-                <a data-toggle="modal" data-target="#add-edit-modal" data-form="{{ route('add-'.word_format($name)) }}" class="btn btn-primary btn-icon-split  f-action-switcher add-new-record ">
+                <a data-toggle="modal" data-target="#add-edit-modal" data-form="{{ get_admin_taxonomy_url( ['name' => 'add-term', ], $currentTaxonomy['taxonomy'], $currentPostType['post_type']  ) }}" class="btn btn-primary btn-icon-split  f-action-switcher add-new-record ">
                     <span class="icon text-white-50">
                         <i class="fas fa-plus"></i>
                     </span>
@@ -47,7 +49,7 @@
                         <div class="search-wrap ">
                             <select class="rec-action" name="rec_action">
                                 <option value="">-----------</option>
-                                <option value="delete" data-form="{{ route('delete-'.word_format($name)) }}">Delete</option>
+                                <option value="delete" data-form="{{ get_admin_taxonomy_url( ['name' => 'delete-term'], $currentTaxonomy['taxonomy'], $currentPostType['post_type']  ) }}">Delete</option>
                             </select>
                             
                         </div>
@@ -79,7 +81,6 @@
                                     <th>Title</th>
                                     <th>Description</th>
                                     <th>Featured Image</th>
-                                    <th>Date</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -91,13 +92,13 @@
                                             <td>{{ $record->term_id }}</td>
                                             <td>{{ $record->name }}</td>
                                             <td>{{ $record->description }}</td>
-                                            <td><img src="{{ get_image($record->featured_image) }}" width="50"></td>
-                                            <td>{!! get_admin_panel_dates($record) !!}</td>
+                                            <td><img src="{{ get_image(get_term_meta($record->term_id, '__featured_image', true)) }}" width="50"></td>
                                             <td class="action">
                                                 
-                                                <a href="{{ route('edit-'.word_format($name), $record->term_id) }}" class="edit-record"><i class="fa fa-pencil-alt"></i></a>
-                                                <a href="{{ route('delete-'.word_format($name), $record->term_id) }}" class="danger-delete">
+                                                <a href="{{ get_admin_taxonomy_url( ['name' => 'edit-term', 'id' => $record->term_id], $currentTaxonomy['taxonomy'], $currentPostType['post_type']  ) }}" class="edit-record"><i class="fa fa-pencil-alt"></i></a>
+                                                <a href="{{ get_admin_taxonomy_url( ['name' => 'delete-term', 'id' => $record->term_id], $currentTaxonomy['taxonomy'], $currentPostType['post_type']  ) }}" class="danger-delete">
                                                     <i class="fa fa-trash"></i>
+                                                    
                                                 </a>
                                             </td>
                                         </tr>
@@ -144,5 +145,5 @@
         </div>
     </div>
 
-    @include('Admin.'.word_format($name, 'ucfirst').'.add-edit')
+    @include('Admin.Term.add-edit')
 @endsection

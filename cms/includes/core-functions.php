@@ -111,7 +111,7 @@
             if ($id != '') {
                 $term1 = Term::query();
                 if (\c_user()->user_type != 'admin') {
-                    $term1->where(['user_id' => \c_user()->ID]);
+                    $term1->where(['user_id' => \array_value(c_user(), 'ID')]);
                 }
                 $term1 = $term1->where(['parent_id' => $id])->get();
                 
@@ -138,7 +138,7 @@
                 $name = 'term';
                 $term1 = Term::query();
                 if (\c_user()->user_type != 'admin') {
-                    $term1->where(['user_id' => \c_user()->ID]);
+                    $term1->where(['user_id' => \array_value(c_user(), 'ID')]);
                 }
                 $term1 = $term1->where(['parent_id' => $id])->get();
                 
@@ -378,7 +378,7 @@
     if (!function_exists('c_user')) {
 
         function c_user() {
-            return Auth::user();
+            return session()->all();
         }
 
     }
@@ -556,6 +556,28 @@
 
     }
 
+    if (!function_exists('get_admin_panel_user_dates')) {
+
+        function get_admin_panel_user_dates($record) {
+            
+            $response = '<div class="a-p-date-wrap">';
+            if ($record) {
+                if ($record->user_registered != '') {
+                    $response .= '<div class="a-p-created-at">Registered At <p>'.get_admin_panel_datetime($record->user_registered).'</p></div>';
+                }
+                // if ($record->created_at == $record->updated_at ) {
+                //     $response .= '<div class="a-p-updated-at">'.\Carbon\Carbon::parse($record->created_at)->diffForHumans(\Carbon\Carbon::now()).'</div>';
+                // }
+                // else {
+                //     $response .= '<div class="a-p-updated-at">'.\Carbon\Carbon::parse($record->updated_at)->diffForHumans(\Carbon\Carbon::now()).'</div>';
+                // }
+            }
+            $response .= '</div>';
+            return $response;
+        }
+
+    }
+
     if (!function_exists('get_admin_panel_date')) {
 
         function get_admin_panel_date() {
@@ -607,15 +629,15 @@
 
         function check_own_record_or_has_permission($model, $req) {
             $result = true;
-            if (c_user()->is_super_admin != 1) {
+            if (array_value(c_user(), 'is_super_admin') != 1) {
                 $id = $req->route()->parameter('id');
                 if ($id != '') {
-                    if ($model::where(['id' => $id, 'user_id' => c_user()->ID])->count() == 0) {
+                    if ($model::where(['id' => $id, 'user_id' => array_value(c_user(), 'ID')])->count() == 0) {
                         $result = false;
                     }
                 }
                 else if($req->input('action_ids')) {
-                    if ($model::whereIn('id', $req->input('action_ids'))->where(['user_id' => c_user()->ID])->count() == 0) {
+                    if ($model::whereIn('id', $req->input('action_ids'))->where(['user_id' => array_value(c_user(), 'ID')])->count() == 0) {
                         $result = false;
                     }
                 }

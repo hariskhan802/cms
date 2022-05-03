@@ -56,7 +56,7 @@ class DatabaseSeeder extends Seeder
         DB::table('term_taxonomy')->insert([
             'term_id' => $termID,
             'taxonomy' => 'category',
-            'description' => '',
+            'description' => 'test content',
         
         ]);
         // DB::table('posts')->insert([
@@ -182,7 +182,7 @@ class DatabaseSeeder extends Seeder
             [
                 'post_id' => 2,
                 'meta_key' => '__template_id',
-                'meta_value' => 5001,
+                'meta_value' => 1,
                 
             ],
             [

@@ -23,7 +23,7 @@ class User extends Authenticatable
         'password',
     ];*/
 
-    protected $guarded = ['id'];
+    protected $guarded = ['ID'];
     
     /**
      * The attributes that should be hidden for serialization.
@@ -31,7 +31,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
+        'user_pass',
         'remember_token',
     ];
 
@@ -40,9 +40,9 @@ class User extends Authenticatable
      *
      * @var array<string, string>
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    // protected $casts = [
+    //     'email_verified_at' => 'datetime',
+    // ];
 
     // public function getCreatedAtAttribute($date)
     // {
